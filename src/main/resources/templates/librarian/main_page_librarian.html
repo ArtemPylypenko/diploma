@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Library "Flower"</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
+            background-size: cover;
+        }
+
+        header {
+            background-color: #ffb366;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        #searchInput {
+            border: none;
+            border-radius: 5px;
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        #searchButton {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #searchButton:hover {
+            background-color: #2471a3;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-primary,
+        .btn-danger {
+            margin-left: 10px;
+        }
+
+
+        .form_book {
+            max-width: 350px;
+            margin: 5% auto 0;
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 220, 185, 0.75);
+        }
+
+        .form_book label {
+            font-weight: 600;
+        }
+
+        .book-title {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: #555;
+
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+
+        label {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .curr_book {
+            background-color: rgba(248, 255, 140, 1);
+            border-radius: 75px;
+        }
+
+
+        #addReaderButton, #addBookButton:hover {
+            background-color: #52FF7B;
+
+        }
+
+        #addReaderButton, #addBookButton {
+            background-color: #7DC96A;
+            color: white;
+            border: 1px solid #3498db;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .flex-container {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            flex-flow: row nowrap;
+        }
+
+        .form_left, .form_right ,.form_center {
+            height: auto;
+            flex-grow: 1;
+
+        }
+
+        input:hover {
+            background-color: #52c2ff;
+
+        }
+
+        input {
+            background-color: #6a9ec9;
+            color: white;
+            border: 1px solid #3498db;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+    </style>
+
+</head>
+
+<body class="text-center">
+<header>
+    <a th:href="@{/librarian}">
+        <h1>Library "Flower" </h1>
+    </a>
+    <div class="user-actions">
+        <form action="#" th:action="@{/logout}" method="get">
+            <button class="btn btn-danger">Logout</button>
+        </form>
+
+    </div>
+</header>
+<div class="alert alert-primary" role="alert" th:text="${success}" th:if="${success}"></div>
+<div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+
+<div class="flex-container">
+
+
+    <div class="form_left">
+        <div class="form_book">
+
+            <label>Reader List:</label>
+            <br>
+            <ul>
+                <li class="curr_book" th:each="reader : ${readers}">
+                    <form method="GET" th:action="@{'/reader/edit/' + ${reader.getId()}}">
+
+                        <label>Name:</label>
+                        <label th:text=" ${reader.name}" class="book-title"></label>
+                        <label th:text=" ${reader.surname}" class="book-title"></label>
+                        <br>
+                        <input type="submit" name="addLibrarian_btn" value="Edit">
+                    </form>
+                    <br>
+                </li>
+            </ul>
+            <br>
+            <form method="get" th:action="@{'/reader/add'}">
+                <input class="btn btn-lg btn-primary" id="addReaderButton" type="submit" name="addLibrarian_btn"
+                       value="Add">
+            </form>
+
+        </div>
+    </div>
+
+    <div class="form_right ">
+
+        <div class="form_book">
+            <label>Book List:</label>
+            <br>
+            <ul>
+                <li class="curr_book" th:each="book : ${books}">
+                    <form method="get" th:action="@{'/book/edit/' + ${book.getId()}}">
+                        <label>Book title:</label>
+                        <label th:text=" ${book.name}" class="book-title"></label>
+                        <br>
+                        <input type="submit" value="Edit">
+                    </form>
+                    <br>
+                </li>
+            </ul>
+            <br>
+
+            <form method="get" th:action="@{'/book/add'}">
+                <input class="btn btn-lg btn-primary" type="submit" id="addBookButton" name="addLibrarian_btn"
+                       value="Add">
+            </form>
+        </div>
+    </div>
+
+    <div class="form_center">
+        <div class="form_book">
+            <ul>
+                <label>Top 5 Book:</label>
+                <li class="curr_book" th:each="book : ${booksTop}">
+                    <label>Book title:</label>
+                    <label th:text=" ${book.name}" class="book-title"></label>
+                    <br>
+                    <label>Rating:</label>
+                    <label th:text=" ${book.rating}" class="book-title"></label>
+                    <br>
+                    <br>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>

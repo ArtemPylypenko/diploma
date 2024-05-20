@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Library "Flower"</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
+            background-size: cover;
+        }
+
+        header {
+            background-color: #ffb366;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-primary,
+        .btn-danger {
+            margin-left: 10px;
+        }
+
+
+        .form_book {
+            max-width: 350px;
+            margin: 5% auto 0;
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 220, 185, 0.75);
+        }
+
+        .form_book label {
+            font-weight: 600;
+        }
+
+        .book-title {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: #555;
+
+
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+
+        label {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #555;
+
+        }
+
+        .curr_book {
+            background-color: rgba(248, 255, 140, 1);
+            border-radius: 75px;
+        }
+
+
+        input:hover {
+            background-color: #52c2ff;
+
+        }
+
+        input {
+            background-color: #6a9ec9;
+            color: white;
+            border: 1px solid #3498db;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #addLibrarianButton {
+            background-color: #7DC96A;
+            color: white;
+            border: 1px solid #3498db;
+            border-radius: 15px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #addLibrarianButton:hover {
+            background-color: #52FF7B;
+
+        }
+
+
+    </style>
+
+</head>
+
+<body class="text-center">
+<header>
+    <a th:href="@{/admin}">
+        <h1>Library "Flower" </h1>
+    </a>
+    <div class="user-actions">
+        <form action="#" th:action="@{/logout}" method="get">
+            <button class="btn btn-danger">Logout</button>
+        </form>
+
+    </div>
+</header>
+<div class="alert alert-primary" role="alert" th:text="${success}" th:if="${success}"></div>
+<div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+<div class="form_book">
+    <label>Libririan List:</label>
+    <br>
+    <ul>
+        <li class="curr_book" th:each="librarian : ${librarians}">
+            <form method="get" th:action="@{'/librarian/edit/' + ${librarian.getId()}}">
+                <label th:text="${librarian.email}" class="book-title"></label>
+                <br>
+                <input type="submit" value="Edit">
+            </form>
+        </li>
+    </ul>
+    <br>
+    <br>
+    <form method="get" th:action="@{'/librarian/add'}">
+        <input class="btn btn-lg btn-primary" type="submit" id="addLibrarianButton" value="Add">
+    </form>
+</div>
+</body>
+</html>

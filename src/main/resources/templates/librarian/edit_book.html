@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Library "Flower"</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
+            background-size: cover;
+        }
+
+        header {
+            background-color: #ffb366;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-primary,
+        .btn-danger {
+            margin-left: 10px;
+        }
+
+        .form_book {
+            max-width: 350px;
+            margin: 5% auto 0;
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 220, 185, 0.75);
+        }
+
+        .form_book label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        label {
+            font-size: 1.5rem;
+            color: #555;
+        }
+
+        #editButton:hover {
+            background-color: #52FF7B;
+
+        }
+
+        #editButton {
+            background-color: #7DC96A;
+            color: white;
+            border: 1px solid #3498db;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #deleteButton:hover {
+            background-color: #FF5252;
+        }
+
+        #deleteButton {
+            background-color: #FF7777;
+            color: white;
+            border: 1px solid #3498db;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+    </style>
+</head>
+
+<body class="text-center">
+<header>
+    <a th:href="@{/librarian}">
+        <h1>Library "Flower" </h1>
+    </a>
+    <div class="user-actions">
+        <form action="#" th:action="@{/logout}" method="get">
+            <button class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</header>
+<div class="form_book">
+    <form method="POST" th:action="@{'/book/edit/' + ${book.getId()}}">
+        <label for="title">Book title:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${book.name}" name="title" type="text" id="title">
+        <br>
+        <label for="author">Authors:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${book.authors}" name="author" type="text" id="author">
+        <br>
+        <label for="given_by">Publishing house:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${book.givenBy}" name="given_by" type="text" id="given_by">
+        <br>
+        <label for="publication">Year of publication:</label>
+        <input maxlength="30" oninput="this.value = this.value.replace(/[^0-9]/g, '');" th:value="${book.publication}" name="publication" type="text" id="publication">
+        <br>
+        <label for="isbn">ISBN:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${book.isbn}" name="isbn" type="text" id="isbn">
+        <br>
+        <br>
+        <input class="btn btn-lg btn-primary" type="submit" id="editButton" name="return_btn" value="Edit">
+        <script>
+            function validateInput(inputField) {
+                var allowedChars = /^[a-zA-Z0-9а-яА-ЯёЁ\s@.]+$/; //  букви, цифри та пробіли
+
+                if (!allowedChars.test(inputField.value)) {
+                    alert("Використовуйте букви, цифри та пробіли та @ ");
+                    inputField.value = inputField.value.replace(/[^a-zA-Z0-9а-яА-ЯёЁ\s@.]/g, '');
+                }
+            }
+        </script>
+    </form>
+
+    <form method="POST" th:action="@{'/book/delete/' + ${book.id}}">
+        <input class="btn btn-lg btn-primary" type="submit" id="deleteButton" name="delete_btn" value="Delete">
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Library "Flower"</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
+            background-size: cover;
+        }
+
+        header {
+            background-color: #ffb366;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-primary,
+        .btn-danger {
+            margin-left: 10px;
+        }
+
+        .form_book {
+            max-width: 350px;
+            margin: 5% auto 0;
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 220, 185, 0.75);
+
+        }
+
+        .form_book label {
+            font-weight: 600;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+
+
+        label {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+
+        #rating {
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            background-color: #f5f5f5;
+            width: auto;
+            max-width: 100%;
+            padding: 5px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        label[for="rating"] {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        #rating:focus {
+            border-color: #e74c3c;
+        }
+
+
+        #setRatingButton :hover {
+            background-color: #c0392b;
+        }
+
+
+        #sortButton {
+            background-color: #3498db;
+            color: white;
+            border: 1px solid #3498db;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #sortButton:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+
+        #returnButton:hover {
+            background-color: #52FF7B;
+
+        }
+
+        #returnButton {
+            background-color: #7DC96A;
+            color: white;
+            border: 1px solid #3498db;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .curr_book {
+            background-color: rgba(248, 255, 140, 1);
+            border-radius: 75px;
+        }
+
+        .history_bth{
+            background-color: rgba(50, 200, 180, 1);
+        }
+
+        .history_bth:hover{
+            background-color: rgba(50, 255, 180, 1);
+        }
+
+
+    </style>
+</head>
+
+<body class="text-center">
+<header>
+    <a th:href="@{/reader}">
+        <h1>Library "Flower" </h1>
+    </a>
+    <div class="user-actions">
+        <form th:action="@{'/reader/history'}" method="get">
+            <button class="btn btn-primary history_bth">History</button>
+        </form>
+
+        <form action="#">
+            <button class="btn btn-primary">My Books</button>
+        </form>
+
+        <form action="#" th:action="@{/logout}" method="get">
+            <button class="btn btn-danger">Logout</button>
+        </form>
+
+    </div>
+</header>
+
+<div class="form_book">
+    <label>My Books:</label>
+
+    <br>
+    <ul>
+        <li class="curr_book" th:each="book : ${books}">
+            <form method="POST" th:action="@{'/bookReturn/'+ ${book.getId()}}">
+                <label>Book title:</label>
+                <label th:text="${book.name}" class="book-title"></label>
+                <br>
+                <label>Authors:</label>
+                <label th:text="${book.authors}"></label>
+
+                <br>
+                <label for="rating">Rating:</label>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var selectElement = document.getElementById("rating");
+                        selectElement.selectedIndex = 2;
+                    });
+                </script>
+
+                <select id="rating" name="rating" required>
+                    <option value="5">&#9733&#9733&#9733&#9733&#9733</option>
+                    <option value="4">&#9733&#9733&#9733&#9733</option>
+                    <option value="3">&#9733&#9733&#9733</option>
+                    <option value="2">&#9733&#9733</option>
+                    <option value="1">&#9733</option>
+                </select>
+
+                <input class="btn btn-lg btn-primary" id="returnButton" type="submit" name="return_btn" value="Return">
+            </form>
+            <br>
+        </li>
+    </ul>
+
+</div>
+</body>
+</html>
