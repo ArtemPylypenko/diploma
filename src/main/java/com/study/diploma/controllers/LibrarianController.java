@@ -6,7 +6,9 @@ import com.study.diploma.entity.Role;
 import com.study.diploma.services.BookService;
 import com.study.diploma.services.ReaderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -28,6 +31,10 @@ public class LibrarianController {
 
     private static final String SUCCESS = "success";
     private static final String ERROR = "error";
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @GetMapping("/librarian")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
@@ -52,11 +59,12 @@ public class LibrarianController {
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public RedirectView addBook(@RequestParam("name") String name,
                                 @RequestParam("authors") String authors,
-                                @RequestParam("given_by") String given_by,
+                                @RequestParam("genres") String genres,
+                                @RequestParam("given_by") String givenBy,
                                 @RequestParam("isbn") String isbn,
                                 @RequestParam("publication") String publication,
                                 RedirectAttributes attributes) {
-        if (Objects.equals(name, "") || Objects.equals(authors, "") || Objects.equals(given_by, "") || Objects.equals(isbn, "")) {
+        if (Objects.equals(name, "") || Objects.equals(authors, "") || Objects.equals(givenBy, "") || Objects.equals(isbn, "")) {
             attributes.addFlashAttribute(ERROR, "U should avoid empty fields!");
             return new RedirectView("/librarian");
         }
@@ -64,9 +72,10 @@ public class LibrarianController {
 
         book.setName(name);
         book.setAuthors(authors);
-        book.setGivenBy(given_by);
+        book.setGenres(Arrays.asList(genres.trim().split("\\s+")));
+        book.setGivenBy(givenBy);
         book.setIsbn(isbn);
-        book.setPublication(Integer.valueOf(publication));
+        book.setPublication(Integer.parseInt(publication));
         book.setRating(3D);
         book.setAvailable(true);
 
@@ -139,7 +148,7 @@ public class LibrarianController {
         Reader reader = new Reader();
         reader.setRole(Role.READER);
         reader.setEmail(email);
-        reader.setPassword(password);
+        reader.setPassword(passwordEncoder.encode(password));
         reader.setName(name);
         reader.setSurname(surname);
         reader.setPhone(phone);
@@ -176,7 +185,7 @@ public class LibrarianController {
             attributes.addFlashAttribute(ERROR, "Reader with such email exist!");
             return new RedirectView("/librarian");
         }
-        readerService.update(email, password, name, surname, phone, placeToLive, id);
+        readerService.update(email, passwordEncoder.encode(password), name, surname, phone, placeToLive, id);
         attributes.addFlashAttribute(SUCCESS, "Edited successfully");
 
         return new RedirectView("/librarian");

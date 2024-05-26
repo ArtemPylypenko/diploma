@@ -8,55 +8,76 @@
     <title>Library "Flower"</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-	<style>
+    <style>
         body {
             background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
             background-size: cover;
+            font-family: 'Arial', sans-serif;
         }
 
         header {
-            background-color: #ffb366;
+            background: linear-gradient(90deg, rgba(255, 183, 102, 1) 0%, rgba(255, 140, 0, 1) 100%);
             color: white;
-            padding: 10px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 15px 15px;
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin: 0;
+            font-weight: bold;
         }
-
-
 
         .user-actions {
             display: flex;
             align-items: center;
         }
 
-        .btn-primary,
-        .btn-danger {
+        .btn {
             margin-left: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+            border-radius: 25px;
         }
 
+        .btn-primary {
+            background-color: #3498db;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: scale(1.1);
+        }
 
         .form_book {
-            max-width: 350px;
+            max-width: 600px;
             margin: 5% auto 0;
-            padding: 10px;
-            border-radius: 20px;
+            padding: 20px;
+            border-radius: 15px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 220, 185, 0.75);
+            background-color: rgba(255, 255, 255, 0.8);
         }
 
         .form_book label {
             font-weight: 600;
+            color: #333;
         }
 
         ul {
@@ -65,21 +86,22 @@
             margin: 0;
         }
 
-
         label {
             font-size: 1.5rem;
             margin-bottom: 5px;
             color: #555;
         }
 
-        .curr_book{
+        .curr_book {
             background-color: rgba(248, 255, 140, 1);
-            border-radius: 75px;
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
         }
 
-        #editButton:hover {
-            background-color: #52FF7B;
-
+        .curr_book:hover {
+            transform: scale(1.05);
         }
 
         #editButton {
@@ -92,70 +114,77 @@
             margin-bottom: 15px;
             margin-right: 10px;
             cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-
-
+            transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
         }
 
-        .history_bth{
-            background-color: rgba(50, 200, 180, 1);
+        #editButton:hover {
+            background-color: #52FF7B;
+            transform: scale(1.1);
         }
 
-        .history_bth:hover{
-            background-color: rgba(50, 255, 180, 1);
+        .history_bth {
+            background-color: #32c8b4;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
+        .history_bth:hover {
+            background-color: #32ffb4;
+            transform: scale(1.1);
+        }
 
     </style>
 </head>
 
 <body class="text-center">
 <header>
-		<a th:href="@{/reader}">
-			<h1>Library "Flower" </h1>
-		</a>
+    <a th:href="@{/reader}">
+        <h1>Library "Flower"</h1>
+    </a>
+    <div class="user-actions">
+        <form th:action="@{'/reader/history'}" method="get">
+            <button class="btn btn-primary history_bth">History</button>
+        </form>
+        <form th:action="@{'/readerBooks'}" method="get">
+            <button class="btn btn-primary">My Books</button>
+        </form>
+        <form th:action="@{'/profile'}" method="get">
+            <button class="btn btn-primary">Profile</button>
+        </form>
+        <form action="#" th:action="@{/logout}" method="get">
+            <button class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</header>
 
-
-        <div class="user-actions">
-
-            <form th:action="@{'/reader/history'}" method="get">
-                <button class="btn btn-primary history_bth">History</button>
-            </form>
-
-             <form  th:action="@{'/readerBooks'}" method="get">
-                <button class="btn btn-primary">My Books</button>
-            </form>
-
-
-            
-			<form action="#" th:action="@{/logout}" method="get">
-                <button class="btn btn-danger">Logout</button>
-			</form>
-            
-        </div>
-    </header>
 <div class="alert alert-primary" role="alert" th:text="${success}" th:if="${success}"></div>
 <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
-    <div class="form_book">
 
-	<label>Book List:</label>
+<div class="form_book">
+    <label>Search for Books:</label>
+    <form th:action="@{/books/search}" method="get">
+        <div class="form-group">
+            <label for="name">Book Title:</label>
+            <input type="text" id="name" name="name" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
 
-
-        <br>
-        <ul>
-            <li class="curr_book" th:each="book : ${books}">
-                <form method="get" th:action="@{'/bookInfo/'+ ${book.getId()}}">
-                        <label>Book title:</label>
-                        <label th:text="${book.name}" class="book-title"></label>
-                         <br>
-                        <label>Authors:</label>
-                        <label th:text="${book.authors}"></label>
-                    <br>
-                    <input class="btn btn-lg btn-primary" type="submit" id="editButton" name="return_btn" value="Check">
-                </form>
-				<br>
-            </li>
-        </ul>
-    </div>
+    <br>
+    <label>Book List:</label>
+    <ul>
+        <li class="curr_book" th:each="book : ${books}">
+            <form method="get" th:action="@{'/bookInfo/'+ ${book.getId()} }">
+                <label>Book title:</label>
+                <label th:text="${book.name}" class="book-title"></label>
+                <br>
+                <label>Authors:</label>
+                <label th:text="${book.authors}"></label>
+                <br>
+                <input class="btn btn-lg btn-primary" type="submit" id="editButton" name="return_btn" value="Check">
+            </form>
+            <br>
+        </li>
+    </ul>
+</div>
 </body>
 </html>

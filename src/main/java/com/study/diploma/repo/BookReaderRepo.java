@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BookReaderRepo extends CrudRepository<BookReader, Long> {
-
 
     @Query(value = "select * from book_reader where book_id = ?1 and reader_id = ?2", nativeQuery = true)
     Optional<BookReader> existsBookUser(Long book, Long reader);
@@ -35,7 +35,6 @@ public interface BookReaderRepo extends CrudRepository<BookReader, Long> {
     @Transactional
     @Query("UPDATE BookReader bh SET bh.createdAt = CURRENT_TIMESTAMP  WHERE bh.book = :book and bh.reader = :reader")
     void updateGiveTime(Book book, Reader reader);
-
 
     @Query("SELECT AVG(e.rating) FROM BookReader e where e.book = :book")
     Double getAvgRating(Book book);

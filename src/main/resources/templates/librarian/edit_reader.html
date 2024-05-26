@@ -16,21 +16,24 @@
         body {
             background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
             background-size: cover;
+            font-family: 'Arial', sans-serif;
         }
 
         header {
-            background-color: #ffb366;
+            background: linear-gradient(90deg, rgba(255, 183, 102, 1) 0%, rgba(255, 140, 0, 1) 100%);
             color: white;
-            padding: 10px;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 15px 15px;
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin: 0;
+            font-weight: bold;
         }
 
         .user-actions {
@@ -38,65 +41,85 @@
             align-items: center;
         }
 
-        .btn-primary,
-        .btn-danger {
+        .btn {
             margin-left: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+            border-radius: 25px;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: scale(1.1);
         }
 
         .form_book {
-            max-width: 350px;
-            margin: 2% auto 2%;
-            padding: 10px;
-            border-radius: 20px;
+            max-width: 400px;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 15px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 220, 185, 0.75);
-
+            background-color: rgba(255, 255, 255, 0.85);
         }
 
         .form_book label {
             font-weight: 600;
+            color: #333;
             display: block;
             margin-bottom: 5px;
         }
 
-        label {
-            font-size: 1.5rem;
-            color: #555;
+        .form_book input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        #editButton:hover {
-            background-color: #52FF7B;
-
+        #editButton, #deleteButton {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 25px;
+            border: none;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
         #editButton {
             background-color: #7DC96A;
             color: white;
-            border: 1px solid #3498db;
-            border-radius: 25px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            margin-right: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
         }
 
-        #deleteButton:hover {
-            background-color: #FF5252;
+        #editButton:hover {
+            background-color: #52FF7B;
+            transform: scale(1.05);
         }
 
         #deleteButton {
             background-color: #FF7777;
             color: white;
-            border: 1px solid #3498db;
-            border-radius: 25px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            margin-right: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #deleteButton:hover {
+            background-color: #FF5252;
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -111,46 +134,44 @@
             <button class="btn btn-danger">Logout</button>
         </form>
     </div>
-
 </header>
 <div class="form_book">
-<form  method="POST" th:action="@{'/reader/edit/' + ${reader.id}}">
-    <label for="email">email:</label>
-    <input maxlength="30" oninput="validateInput(this)" th:value="${reader.email}" name="email" type="text" id="email">
-    <br>
-    <label for="password">password:</label>
-    <input maxlength="30" oninput="validateInput(this)" th:value="${reader.password}"  name="password" type="text" id="password">
-    <br>
-    <label for="name">Name:</label>
-    <input maxlength="30" oninput="validateInput(this)" th:value="${reader.name}"  name="name" type="text" id="name">
-    <br>
-    <label for="surname">Surname:</label>
-    <input maxlength="30" oninput="validateInput(this)" th:value="${reader.surname}"  name="surname" type="text" id="surname">
-    <br>
-    <label for="phone">Phone:</label>
-    <input maxlength="30" oninput="validateInput(this)"  th:value="${reader.phone}" name="phone" type="text" id="phone">
-    <br>
-    <label for="place_to_live">Place to live:</label>
-    <input maxlength="30" oninput="validateInput(this)" th:value="${reader.placeToLive}" name="place_to_live" type="text" id="place_to_live">
-    <br>
-    <br>
-    <script>
-        function validateInput(inputField) {
-            var allowedChars = /^[a-zA-Z0-9а-яА-ЯёЁ\s@.]+$/; //  букви, цифри та пробіли
+    <form method="POST" th:action="@{'/reader/edit/' + ${reader.id}}">
+        <label for="email">Email:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${reader.email}" name="email" type="text" id="email">
+        <br>
+        <label for="password">Password:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${reader.password}"  name="password" type="text" id="password">
+        <br>
+        <label for="name">Name:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${reader.name}"  name="name" type="text" id="name">
+        <br>
+        <label for="surname">Surname:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${reader.surname}"  name="surname" type="text" id="surname">
+        <br>
+        <label for="phone">Phone:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${reader.phone}" name="phone" type="text" id="phone">
+        <br>
+        <label for="place_to_live">Place to live:</label>
+        <input maxlength="30" oninput="validateInput(this)" th:value="${reader.placeToLive}" name="place_to_live" type="text" id="place_to_live">
+        <br>
+        <br>
+        <script>
+            function validateInput(inputField) {
+                var allowedChars = /^[a-zA-Z0-9а-яА-ЯёЁ\s@.]+$/; // букви, цифри та пробіли
 
-            if (!allowedChars.test(inputField.value)) {
-                alert("Використовуйте букви, цифри та пробіли та @ ");
-                inputField.value = inputField.value.replace(/[^a-zA-Z0-9а-яА-ЯёЁ\s@.]/g, '');
+                if (!allowedChars.test(inputField.value)) {
+                    alert("Використовуйте букви, цифри, пробіли та @");
+                    inputField.value = inputField.value.replace(/[^a-zA-Z0-9а-яА-ЯёЁ\s@.]/g, '');
+                }
             }
-        }
-    </script>
-    <input class="btn btn-lg btn-primary" type="submit" id="editButton" name="return_btn" value="Edit">
-</form>
+        </script>
+        <input class="btn btn-lg" type="submit" id="editButton" name="return_btn" value="Edit">
+    </form>
 
-<form  method="POST" th:action="@{'/reader/delete/' + ${reader.id}}">
-    <input class="btn btn-lg btn-primary" type="submit" id="deleteButton" name="delete_btn" value="Delete">
-</form>
-
+    <form method="POST" th:action="@{'/reader/delete/' + ${reader.id}}">
+        <input class="btn btn-lg" type="submit" id="deleteButton" name="delete_btn" value="Delete">
+    </form>
 </div>
 </body>
 </html>

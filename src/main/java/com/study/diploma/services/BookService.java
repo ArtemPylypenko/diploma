@@ -51,4 +51,16 @@ public class BookService implements ClassicalDao<Book> {
     public void updateRating(Double rating, Long id) {
         bookRepo.updateRating(rating, id);
     }
+
+    public List<Book> getAllByRating() {
+        return bookRepo.getBooksByRating();
+    }
+
+    public List<Book> getByName(String name) {
+        return bookRepo.getBookByName(name);
+    }
+
+    public List<Book> getByGenres(String genres) {
+        return bookRepo.getBookByGenres(genres);
+    }
 }

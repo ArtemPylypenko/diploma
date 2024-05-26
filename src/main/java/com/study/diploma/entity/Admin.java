@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 @Table(name = "admins")
 @NoArgsConstructor
-public class Admin extends User{
+public class Admin extends User {
 }

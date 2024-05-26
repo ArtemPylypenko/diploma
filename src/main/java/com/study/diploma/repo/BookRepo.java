@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BookRepo extends CrudRepository<Book, Long> {
@@ -32,4 +33,13 @@ public interface BookRepo extends CrudRepository<Book, Long> {
 
     @Override
     Optional<Book> findById(Long id);
+
+    @Query(value = "SELECT * FROM books ORDER BY rating DESC", nativeQuery = true)
+    List<Book> getBooksByRating();
+
+    @Query("SELECT b FROM Book b WHERE LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<Book> getBookByName(String name);
+
+    @Query("SELECT b FROM Book b WHERE :name MEMBER OF b.genres")
+    List<Book> getBookByGenres(String name);
 }

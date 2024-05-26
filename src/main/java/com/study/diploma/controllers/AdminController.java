@@ -4,7 +4,9 @@ import com.study.diploma.entity.Librarian;
 import com.study.diploma.entity.Role;
 import com.study.diploma.services.LibrarianService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,10 @@ public class AdminController {
 
     private static final String SUCCESS = "success";
     private static final String ERROR = "error";
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @GetMapping("/admin")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -49,7 +55,7 @@ public class AdminController {
         if (!librarianService.existByEmail(email)) {
             Librarian librarian = new Librarian();
             librarian.setRole(Role.LIBRARIAN);
-            librarian.setPassword(password);
+            librarian.setPassword(passwordEncoder.encode(password));
             librarian.setEmail(email);
             librarianService.save(librarian);
             attributes.addFlashAttribute(SUCCESS, "Librarian added!");
@@ -76,14 +82,14 @@ public class AdminController {
 
         if (librarianService.existByEmail(email)) {
             if (email.equals(librarianService.getById(id).get().getEmail())) {
-                librarianService.updateById(email, password, id);
+                librarianService.updateById(email, passwordEncoder.encode(password), id);
                 attributes.addFlashAttribute(SUCCESS, "Edited successfully");
             } else {
                 attributes.addFlashAttribute(ERROR, "Such email already exist!");
             }
             return new RedirectView("/admin");
         }
-        librarianService.updateById(email, password, id);
+        librarianService.updateById(email, passwordEncoder.encode(password), id);
         attributes.addFlashAttribute(SUCCESS, "Edited successfully");
 
         return new RedirectView("/admin");

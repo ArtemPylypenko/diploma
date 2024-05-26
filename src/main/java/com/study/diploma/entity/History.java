@@ -35,4 +35,7 @@ public class History extends BaseEntity {
 
     @Column(name = "rating")
     private Double rating;
+
+    @Column(name = "comment")
+    private String comment;
 }

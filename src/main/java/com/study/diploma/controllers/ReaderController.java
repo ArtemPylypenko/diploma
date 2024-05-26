@@ -2,6 +2,7 @@ package com.study.diploma.controllers;
 
 import com.study.diploma.dto.HistoryDTO;
 import com.study.diploma.entity.Book;
+import com.study.diploma.entity.Comment;
 import com.study.diploma.entity.History;
 import com.study.diploma.entity.Reader;
 import com.study.diploma.services.BookReaderService;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @EnableWebMvc
 @org.springframework.stereotype.Controller
@@ -39,6 +41,7 @@ public class ReaderController {
 
     private static final String SUCCESS = "success";
     private static final String ERROR = "error";
+    private static final String MESSAGE = "message";
 
     @GetMapping("/reader")
     @PreAuthorize("hasAuthority('READER')")
@@ -47,11 +50,51 @@ public class ReaderController {
         return "reader/book_list_reader";
     }
 
+    @GetMapping("/profile")
+    @PreAuthorize("hasAuthority('READER')")
+    public String profile(Model model) {
+        model.addAttribute("user", readerService.getById(getLoggedReaderId()).get());
+        return "reader/user_profile";
+    }
+
+    @PostMapping("/profile/update")
+    @PreAuthorize("hasAuthority('READER')")
+    public RedirectView addBook(@RequestParam("name") String name,
+                                @RequestParam("surname") String surname,
+                                @RequestParam("phone") String phone,
+                                @RequestParam("email") String email,
+                                @RequestParam("oldPassword") String oldPassword,
+                                @RequestParam("newPassword") String newPassword,
+                                RedirectAttributes attributes) {
+        if (Objects.equals(name, "") || Objects.equals(surname, "") || Objects.equals(phone, "") || Objects.equals(email, "")
+                || Objects.equals(oldPassword, "")) {
+            attributes.addFlashAttribute(MESSAGE, "U should avoid empty fields!");
+            return new RedirectView("/profile");
+        }
+        if (!readerService.getById(getLoggedReaderId()).get().getPassword().equals(oldPassword)) {
+            attributes.addFlashAttribute(MESSAGE, "Old password should equal to your current password");
+            return new RedirectView("/profile");
+        }
+        readerService.updateReader(getLoggedReaderId(), name, surname, phone, email, newPassword.isEmpty() ? oldPassword : newPassword);
+        attributes.addFlashAttribute(SUCCESS, "Changes were applied");
+
+        return new RedirectView("/reader");
+    }
+
     @GetMapping("/bookInfo/{id}")
     @PreAuthorize("hasAuthority('READER')")
     public String bookInfo(@PathVariable("id") Long id, Model model) {
         Book book = bookService.getById(id).get();
         model.addAttribute("book", book);
+        List<Comment> comments = new ArrayList<>();
+
+        historyService.getAllByBook(id).forEach(history -> {
+            if ((readerService.getById(history.getReader()).isPresent() && history.getComment() != null && !history.getComment().isEmpty())) {
+                comments.add(new Comment(readerService.getById(history.getReader()).get().getName(), history.getComment()));
+            }
+        });
+        model.addAttribute("comments", comments);
+
         return "reader/book_info_reader";
     }
 
@@ -81,9 +124,26 @@ public class ReaderController {
         return "reader/my_book_reader";
     }
 
+    @GetMapping("/books/search")
+    @PreAuthorize("hasAuthority('READER')")
+    public String myBooks(@RequestParam("name") String name, Model model) {
+        if (bookService.getByName(name) == null || bookService.getByGenres(name) == null) {
+            model.addAttribute(MESSAGE, "we can t find books with such name");
+            return "reader/book_list_reader";
+        }
+        List<Book> result = bookService.getByName(name);
+        result.addAll(bookService.getByGenres(name));
+        if (result.isEmpty()) {
+            model.addAttribute(ERROR, "we can t find books with such name");
+            return "reader/book_list_reader";
+        }
+        model.addAttribute("books", result);
+        return "reader/book_list_reader";
+    }
+
     @PostMapping("/bookReturn/{id}")
     @PreAuthorize("hasAuthority('READER')")
-    public RedirectView myBooks(@PathVariable("id") Long id, @RequestParam("rating") Double rating) {
+    public RedirectView myBooks(@PathVariable("id") Long id, @RequestParam("rating") Double rating, @RequestParam("comment") String comment) {
         Reader reader = readerService.getById(getLoggedReaderId()).get();
         Book book = bookService.getById(id).get();
         bookService.updateAvailable(true, id);
@@ -91,10 +151,10 @@ public class ReaderController {
 
         reader.removeBook(book);
         book.removeReader(reader);
-        historyService.updateRating();
+        historyService.updateReturn();
         bookReaderService.deteleReaderBook(reader, book);
-        historyService.updateRating(rating, reader.getId(), book.getId());
-
+        historyService.updateReturn(rating, reader.getId(), book.getId(), comment);
+        bookService.updateRating(historyService.getAVGRating(id), id);
         return new RedirectView("/reader");
     }
 

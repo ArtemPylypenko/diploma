@@ -1,0 +1,9 @@
+GET localhost:7070/
+###
+POST localhost:7070/reader/save
+Content-Type: application/json
+
+{
+  "email" : "qwerty@gmail.com",
+  "password": "12345678"
+}

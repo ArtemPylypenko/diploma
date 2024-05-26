@@ -35,9 +35,8 @@ public class HistoryService implements ClassicalDao<History> {
         return StreamSupport.stream(historyRepo.findAll().spliterator(), false).toList();
     }
 
-    public void updateRating(Double rating, Long readerId, Long bookID) {
-        historyRepo.updateRating(rating, readerId, bookID);
-        historyRepo.updateReturn(readerId, bookID);
+    public void updateReturn(Double rating, Long readerId, Long bookID, String comment) {
+        historyRepo.updateReturn(readerId, bookID, comment, rating);
     }
 
     public Double getAVGRating(Long bookId) {
@@ -48,7 +47,7 @@ public class HistoryService implements ClassicalDao<History> {
             return (double) Math.round(avgRating * 10) / 10;
     }
 
-    public void updateRating() {
+    public void updateReturn() {
         StreamSupport.stream(bookRepo.findAll().spliterator(), false).toList().forEach(book -> {
             if (getAVGRating(book.getId()) != null)
                 bookRepo.updateRating(getAVGRating(book.getId()), book.getId());
@@ -76,6 +75,10 @@ public class HistoryService implements ClassicalDao<History> {
         return historyRepo.getAllByReader(reader);
     }
 
+    public List<History> getAllByBook(Long book) {
+        return historyRepo.getAllByReader(book);
+    }
+
     public HistoryDTO historyToDto(History history) {
         String name = bookRepo.findById(history.getBook()).get().getName();
 
@@ -84,5 +87,9 @@ public class HistoryService implements ClassicalDao<History> {
         // Перетворюємо LocalDateTime у String
 
         return new HistoryDTO(name, history.getCreatedAt().format(formatter), history.getReturnedAt().format(formatter));
+    }
+
+    public List<History> getAllNotReturned() {
+        return historyRepo.getAllNotReturned();
     }
 }

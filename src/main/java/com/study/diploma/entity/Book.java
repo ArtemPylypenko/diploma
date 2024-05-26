@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,6 +23,11 @@ public class Book extends BaseEntity {
 
     @Column(name = "authors")
     private String authors;
+
+    @ElementCollection
+    @CollectionTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_id"))
+    @Column(name = "genre")
+    private List<String> genres;
 
     @Column(name = "publication")
     private int publication;

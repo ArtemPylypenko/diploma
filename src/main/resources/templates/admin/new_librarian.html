@@ -7,15 +7,14 @@
     <meta name="author" content="">
     <title>Library "Flower"</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
     <style>
         body {
-            background-size: cover;
             background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
+            background-size: cover;
+            background-position: center;
+            font-family: 'Inter', sans-serif;
         }
 
         header {
@@ -26,6 +25,10 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
 
         h1 {
@@ -33,105 +36,88 @@
             margin: 0;
         }
 
-        .user-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-primary,
-        .btn-danger {
-            margin-left: 10px;
-        }
-
-        .form_book {
-            max-width: 350px;
-            margin: 5% auto 0;
-            padding: 10px;
-            border-radius: 20px;
+        .form-container {
+            background-color: rgba(255, 220, 185, 0.85);
+            max-width: 400px;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 15px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 220, 185, 0.75);
+            margin-top: 100px; /* Adjusted for fixed header */
         }
 
-        .form_book label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 5px;
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn ease-in 1;
+            animation-fill-mode: forwards;
+            animation-duration: 1s;
         }
 
-        label {
-            font-size: 1.5rem;
-            color: #555;
+        @keyframes fadeIn {
+            0% { opacity:0; }
+            100% { opacity:1; }
         }
 
-        #addLibrarianButton:hover {
-            background-color: #52FF7B;
-
-        }
-
-        #addLibrarianButton {
+        .btn {
             background-color: #7DC96A;
             color: white;
-            border: 1px solid #3498db;
+            border: none;
             border-radius: 25px;
             padding: 10px 20px;
             font-size: 1rem;
             margin-bottom: 15px;
-            margin-right: 10px;
             cursor: pointer;
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        #deleteButton:hover {
-            background-color: #FF5252;
-        }
-
-        #deleteButton {
-            background-color: #FF7777;
-            color: white;
-            border: 1px solid #3498db;
-            border-radius: 25px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            margin-right: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
+        .btn:hover {
+            background-color: #52FF7B;
         }
     </style>
-</head>
 
-<body class="text-center">
-<header>
-    <a th:href="@{/admin}">
-        <h1>Library "Flower" </h1>
-    </a>
-    <div class="user-actions">
-        <form action="#" th:action="@{/logout}" method="get">
-            <button class="btn btn-danger">Logout</button>
-        </form>
-    </div>
-</header>
-<div class="form_book">
-<form  method="POST" th:action="@{'/librarian/add'}">
-    <label for="email">Mail:</label>
-    <input oninput="validateInput(this)"  maxlength="30" name="email" type="text" id="email">
-    <br>
-    <label for="password">Password:</label>
-    <input oninput="validateInput(this)"  maxlength="30" name="password" type="text" id="password">
-    <br>
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const elements = document.querySelectorAll(".fade-in");
+            elements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.classList.add("opacity-100");
+                }, index * 200);
+            });
+        });
+
         function validateInput(inputField) {
-            var allowedChars = /^[a-zA-Z0-9а-яА-ЯёЁ\s@.]+$/; //  букви, цифри та пробіли
+            var allowedChars = /^[a-zA-Z0-9а-яА-ЯёЁ\s@.]+$/;
 
             if (!allowedChars.test(inputField.value)) {
-                alert("Використовуйте букви, цифри та пробіли та @ ");
+                alert("Використовуйте букви, цифри, пробіли та @");
                 inputField.value = inputField.value.replace(/[^a-zA-Z0-9а-яА-ЯёЁ\s@.]/g, '');
             }
         }
     </script>
-    <br>
-    <input class="btn btn-lg btn-primary" type="submit" id="addLibrarianButton" name="addLibrarian_btn" value="Add">
-</form>
+</head>
+
+<body class="text-center min-h-screen flex flex-col items-center justify-center">
+<header>
+    <a th:href="@{/admin}" class="text-2xl font-bold">
+        Library "Flower"
+    </a>
+    <div class="user-actions">
+        <form action="#" th:action="@{/logout}" method="get" class="inline">
+            <button class="btn btn-danger bg-red-600 hover:bg-red-800 text-white py-2 px-4 rounded">Logout</button>
+        </form>
+    </div>
+</header>
+
+<div class="form-container fade-in">
+    <form method="POST" th:action="@{'/librarian/add'}">
+        <label for="email" class="block text-xl font-semibold mb-2">Email:</label>
+        <input oninput="validateInput(this)" maxlength="30" name="email" type="text" id="email" class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+        <label for="password" class="block text-xl font-semibold mb-2">Password:</label>
+        <input oninput="validateInput(this)" maxlength="30" name="password" type="text" id="password" class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+        <input class="btn w-full py-2 px-4 rounded text-white cursor-pointer" type="submit" id="addLibrarianButton" name="addLibrarian_btn" value="Add">
+    </form>
 </div>
 </body>
 </html>

@@ -11,9 +11,9 @@ import java.util.Collection;
 import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
-    private String email;
-    private String password;
-    private List<GrantedAuthority> role;
+    private final String email;
+    private final String password;
+    private final List<GrantedAuthority> role;
 
     public CustomUserDetails(UserAuth user) {
         email = user.getEmail();
