@@ -4,6 +4,8 @@ import com.study.diploma.entity.Reader;
 import com.study.diploma.repo.BookReaderRepo;
 import com.study.diploma.repo.ReaderRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +42,10 @@ public class ReaderService implements ClassicalDao<Reader> {
         return StreamSupport.stream(readerRepo.findAll().spliterator(), false).toList();
     }
 
+    public Page<Reader> findAll(PageRequest pageRequest) {
+        return readerRepo.findAllReaders(pageRequest);
+    }
+
     public Optional<Reader> findByEmail(String email) {
         return readerRepo.findByEmail(email);
     }
@@ -55,8 +61,13 @@ public class ReaderService implements ClassicalDao<Reader> {
     public void update(String email, String password, String name, String surname, String phone, String placeToLive, Long id) {
         String oldEmail = readerRepo.findById(id).get().getEmail();
         userService.updateByOldEmail(oldEmail, email, password);
-
         readerRepo.update(email, password, name, surname, phone, placeToLive, id);
+    }
+
+    public void update(String email, String name, String surname, String phone, String placeToLive, Long id) {
+        String oldEmail = readerRepo.findById(id).get().getEmail();
+        userService.updateByOldEmail(oldEmail, email);
+        readerRepo.update(email, name, surname, phone, placeToLive, id);
     }
 
     public void updateReader(Long id, String name, String surname, String phone, String email, String password) {

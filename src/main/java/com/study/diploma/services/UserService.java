@@ -49,4 +49,7 @@ public class UserService implements ClassicalDao<UserAuth> {
     public void updateByOldEmail(String old, String email, String password) {
         userRepo.updateByEmail(old, email, password);
     }
+    public void updateByOldEmail(String old, String email) {
+        userRepo.updateByEmail(old, email);
+    }
 }

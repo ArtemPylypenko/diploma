@@ -82,7 +82,11 @@ public class AdminController {
 
         if (librarianService.existByEmail(email)) {
             if (email.equals(librarianService.getById(id).get().getEmail())) {
-                librarianService.updateById(email, passwordEncoder.encode(password), id);
+                if(!librarianService.getById(id).get().getPassword().equals(password)){
+                    librarianService.updateById(email, passwordEncoder.encode(password), id);
+                }else {
+                    librarianService.updateById(email, id);
+                }
                 attributes.addFlashAttribute(SUCCESS, "Edited successfully");
             } else {
                 attributes.addFlashAttribute(ERROR, "Such email already exist!");

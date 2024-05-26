@@ -11,14 +11,12 @@
 
     <style>
         body {
-            background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             font-family: 'Inter', sans-serif;
         }
 
         header {
-            background-color: #ffb366;
+            background-color: #4a5568;
             color: white;
             padding: 10px;
             display: flex;
@@ -31,19 +29,14 @@
             z-index: 1000;
         }
 
-        h1 {
-            font-size: 1.8rem;
-            margin: 0;
-        }
-
         .form-container {
-            background-color: rgba(255, 220, 185, 0.85);
+            background-color: rgba(255, 255, 255, 0.9);
             max-width: 400px;
             margin: 5% auto;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            margin-top: 100px; /* Adjusted for fixed header */
+            margin-top: 100px;
         }
 
         .fade-in {
@@ -59,7 +52,7 @@
         }
 
         .btn {
-            background-color: #7DC96A;
+            background-color: #4299e1;
             color: white;
             border: none;
             border-radius: 25px;
@@ -71,7 +64,7 @@
         }
 
         .btn:hover {
-            background-color: #52FF7B;
+            background-color: #2b6cb0;
         }
     </style>
 
@@ -103,7 +96,7 @@
     </a>
     <div class="user-actions">
         <form action="#" th:action="@{/logout}" method="get" class="inline">
-            <button class="btn btn-danger bg-red-600 hover:bg-red-800 text-white py-2 px-4 rounded">Logout</button>
+            <button class="btn bg-red-600 hover:bg-red-800">Logout</button>
         </form>
     </div>
 </header>

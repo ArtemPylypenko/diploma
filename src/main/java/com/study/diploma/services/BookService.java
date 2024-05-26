@@ -4,6 +4,8 @@ import com.study.diploma.entity.Book;
 import com.study.diploma.repo.BookReaderRepo;
 import com.study.diploma.repo.BookRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,10 @@ public class BookService implements ClassicalDao<Book> {
     @Override
     public List<Book> getAll() {
         return StreamSupport.stream(bookRepo.findAll().spliterator(), false).toList();
+    }
+
+    public Page<Book> getAllBooksPage(PageRequest page) {
+        return bookRepo.findAllBooks(page);
     }
 
     public Optional<Book> getById(Long id) {
@@ -62,5 +68,9 @@ public class BookService implements ClassicalDao<Book> {
 
     public List<Book> getByGenres(String genres) {
         return bookRepo.getBookByGenres(genres);
+    }
+
+    public Page<Book> findAll(PageRequest page) {
+        return bookRepo.findAllBooks(page);
     }
 }

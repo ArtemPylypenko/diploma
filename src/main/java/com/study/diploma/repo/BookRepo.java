@@ -2,6 +2,8 @@ package com.study.diploma.repo;
 
 import com.study.diploma.entity.Book;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -12,6 +14,8 @@ import java.util.Optional;
 public interface BookRepo extends CrudRepository<Book, Long> {
     @Override
     Iterable<Book> findAll();
+    @Query("SELECT b FROM Book b")
+    Page<Book> findAllBooks(Pageable pageable);
 
     @Query(value = "select available from books where name = ?1 and authors = ?2", nativeQuery = true)
     boolean isAvailable(String bookName, String authors);

@@ -7,84 +7,83 @@
     <meta name="author" content="">
     <title>Library "Flower"</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
     <style>
         body {
-            background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
-            background-size: cover;
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', sans-serif;
         }
 
         header {
-            background: linear-gradient(90deg, rgba(255, 183, 102, 1) 0%, rgba(255, 140, 0, 1) 100%);
+            background-color: #4a5568;
             color: white;
-            padding: 15px;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 15px 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
 
-        h1 {
-            font-size: 2rem;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .btn {
-            margin-left: 10px;
-            transition: background-color 0.3s, transform 0.3s;
-            border-radius: 25px;
-        }
-
-        .btn-primary {
-            background-color: #3498db;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-            transform: scale(1.1);
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            border: none;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-            transform: scale(1.1);
-        }
-
-        .form_book {
-            max-width: 350px;
-            margin: 5% auto 0;
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            min-width: 250px;
+            max-width: 400px;
+            margin: 5% auto;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 255, 255, 0.8);
+            margin-top: 100px;
         }
 
-        .form_book label {
-            font-weight: 600;
-            color: #333;
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn ease-in 1;
+            animation-fill-mode: forwards;
+            animation-duration: 1s;
         }
 
-        .book-title {
+        @keyframes fadeIn {
+            0% { opacity:0; }
+            100% { opacity:1; }
+        }
+
+        .btn {
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2b6cb0;
+        }
+
+        .list-item {
+            background-color: #edf2f7;
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+
+        .list-item:hover {
+            transform: scale(1.05);
+        }
+
+        .item-title {
             font-size: 1.5rem;
             margin-bottom: 5px;
-            color: #555;
+            color: #2d3748;
         }
 
         ul {
@@ -93,154 +92,85 @@
             margin: 0;
         }
 
-        label {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        .curr_book {
-            background-color: rgba(248, 255, 140, 1);
-            border-radius: 75px;
-            padding: 10px;
-            margin-bottom: 10px;
-            transition: transform 0.3s;
-        }
-
-        .curr_book:hover {
-            transform: scale(1.05);
-        }
-
-        #addReaderButton, #addBookButton:hover {
-            background-color: #52FF7B;
-            transform: scale(1.1);
-        }
-
-        #addReaderButton, #addBookButton {
-            background-color: #7DC96A;
-            color: white;
-            border: 1px solid #3498db;
-            border-radius: 25px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            margin-right: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
-        }
-
-        .flex-container {
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             width: 100%;
-            height: 300px;
+        }
+
+        .pagination {
             display: flex;
-            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
         }
 
-        .form_left, .form_right, .form_center {
-            height: auto;
-            flex-grow: 1;
-        }
-
-        input:hover {
-            background-color: #52c2ff;
-            transform: scale(1.1);
-        }
-
-        input {
-            background-color: #6a9ec9;
-            color: white;
-            border: 1px solid #3498db;
-            border-radius: 25px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            margin-right: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s, transform 0.3s;
+        .pagination a, .pagination span {
+            margin: 0 5px;
         }
     </style>
 </head>
 
-<body class="text-center">
+<body class="text-center min-h-screen flex flex-col items-center justify-center">
 <header>
-    <a th:href="@{/librarian}">
-        <h1>Library "Flower" </h1>
+    <a th:href="@{/librarian}" class="text-2xl font-bold">
+        Library "Flower"
     </a>
     <div class="user-actions">
-        <form action="#" th:action="@{/logout}" method="get">
-            <button class="btn btn-danger">Logout</button>
+        <form action="#" th:action="@{/logout}" method="get" class="inline">
+            <button class="btn bg-red-600 hover:bg-red-800">Logout</button>
         </form>
         <form action="/excel-reports/books-not-returned" method="get" class="inline">
-            <button class="btn btn-primary">Generate Books Not Returned Report</button>
+            <button class="btn">Generate Books Not Returned Report</button>
         </form>
         <form action="/excel-reports/books-popularity" method="get" class="inline">
-            <button class="btn btn-primary">Generate Books Popularity Report</button>
+            <button class="btn">Generate Books Popularity Report</button>
         </form>
     </div>
 </header>
+
 <div class="alert alert-primary" role="alert" th:text="${success}" th:if="${success}"></div>
 <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
 
-<div class="flex-container">
-    <div class="form_left">
-        <div class="form_book">
-            <form method="get" th:action="@{'/reader/add'}">
-                <input class="btn btn-lg btn-primary" id="addReaderButton" type="submit" name="addLibrarian_btn" value="Add Reader">
-            </form>
-            <label>Reader List:</label>
-            <br>
-            <ul>
-                <li class="curr_book" th:each="reader : ${readers}">
-                    <form method="GET" th:action="@{'/reader/edit/' + ${reader.getId()}}">
-                        <label>Name:</label>
-                        <label th:text="${reader.name}" class="book-title"></label>
-                        <label th:text="${reader.surname}" class="book-title"></label>
-                        <br>
-                        <input type="submit" name="addLibrarian_btn" value="Edit">
-                    </form>
-                    <br>
-                </li>
-            </ul>
-            <br>
+<div class="grid-container mt-20">
+    <div class="form-container fade-in">
+        <form method="get" th:action="@{'/reader/add'}">
+            <input class="btn w-full" type="submit" id="addReaderButton" value="Add Reader">
+        </form>
+        <label class="block text-xl font-semibold mb-2">Reader List:</label>
+        <ul>
+            <li class="list-item mb-4 p-4" th:each="reader : ${readersPage.getContent()}">
+                <form method="get" th:action="@{'/reader/edit/' + ${reader.getId()}}">
+                    <label th:text="${reader.name}" class="item-title block"></label>
+                    <label th:text="${reader.surname}" class="item-title block"></label>
+                    <input type="submit" value="Edit" class="btn w-full mt-2">
+                </form>
+            </li>
+        </ul>
+        <div class="pagination">
+            <a th:if="${readersPage.hasPrevious()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number} + '&readerPage=' + ${readersPage.number - 1}}" class="btn">Previous</a>
+            <span>Page <span th:text="${readersPage.number + 1}"></span> of <span th:text="${readersPage.totalPages}"></span></span>
+            <a th:if="${readersPage.hasNext()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number} + '&readerPage=' + ${readersPage.number + 1}}" class="btn">Next</a>
         </div>
     </div>
-
-    <div class="form_right">
-        <div class="form_book">
-            <form method="get" th:action="@{'/book/add'}">
-                <input class="btn btn-lg btn-primary" type="submit" id="addBookButton" name="addReaderButton" value="Add Book">
-            </form>
-            <label>Book List:</label>
-            <br>
-            <ul>
-                <li class="curr_book" th:each="book : ${books}">
-                    <form method="get" th:action="@{'/book/edit/' + ${book.getId()}}">
-                        <label>Book title:</label>
-                        <label th:text="${book.name}" class="book-title"></label>
-                        <br>
-                        <input type="submit" value="Edit">
-                    </form>
-                    <br>
-                </li>
-            </ul>
-            <br>
-        </div>
-    </div>
-
-    <div class="form_center">
-        <div class="form_book">
-            <ul>
-                <label>Top 5 Book:</label>
-                <li class="curr_book" th:each="book : ${booksTop}">
-                    <label>Book title:</label>
-                    <label th:text="${book.name}" class="book-title"></label>
-                    <br>
-                    <label>Rating:</label>
-                    <label th:text="${book.rating}" class="book-title"></label>
-                    <br>
-                    <br>
-                </li>
-            </ul>
+    <div class="form-container fade-in">
+        <form method="get" th:action="@{'/book/add'}">
+            <input class="btn w-full" type="submit" id="addBookButton" value="Add Book">
+        </form>
+        <label class="block text-xl font-semibold mb-2">Book List:</label>
+        <ul>
+            <li class="list-item mb-4 p-4" th:each="book : ${booksPage.getContent()}">
+                <form method="get" th:action="@{'/book/edit/' + ${book.getId()}}">
+                    <label th:text="${book.name}" class="item-title block"></label>
+                    <input type="submit" value="Edit" class="btn w-full mt-2">
+                </form>
+            </li>
+        </ul>
+        <div class="pagination">
+            <a th:if="${booksPage.hasPrevious()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number - 1} + '&readerPage=' + ${readersPage.number}}" class="btn">Previous</a>
+            <span>Page <span th:text="${booksPage.number + 1}"></span> of <span th:text="${booksPage.totalPages}"></span></span>
+            <a th:if="${booksPage.hasNext()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number + 1} + '&readerPage=' + ${readersPage.number}}" class="btn">Next</a>
         </div>
     </div>
 </div>

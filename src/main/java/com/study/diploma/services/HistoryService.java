@@ -76,7 +76,7 @@ public class HistoryService implements ClassicalDao<History> {
     }
 
     public List<History> getAllByBook(Long book) {
-        return historyRepo.getAllByReader(book);
+        return historyRepo.getAllByBook(book);
     }
 
     public HistoryDTO historyToDto(History history) {

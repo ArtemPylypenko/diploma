@@ -7,143 +7,70 @@
     <meta name="author" content="">
     <title>Library "Flower"</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
     <style>
         body {
-            background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
-            background-size: cover;
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', sans-serif;
         }
 
         header {
-            background: linear-gradient(90deg, rgba(255, 183, 102, 1) 0%, rgba(255, 140, 0, 1) 100%);
+            background-color: #4a5568;
             color: white;
-            padding: 15px;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 15px 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
 
-        h1 {
-            font-size: 2rem;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .btn {
-            margin-left: 10px;
-            transition: background-color 0.3s, transform 0.3s;
-            border-radius: 25px;
-        }
-
-        .btn-primary {
-            background-color: #3498db;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-            transform: scale(1.1);
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            border: none;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-            transform: scale(1.1);
-        }
-
-        .form_book {
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
             max-width: 400px;
             margin: 5% auto;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 255, 255, 0.85);
+            margin-top: 100px;
         }
 
-        .form_book label {
-            font-weight: 600;
-            color: #333;
-            display: block;
-            margin-bottom: 5px;
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn ease-in 1;
+            animation-fill-mode: forwards;
+            animation-duration: 1s;
         }
 
-        .form_book input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        @keyframes fadeIn {
+            0% { opacity:0; }
+            100% { opacity:1; }
         }
 
-        #addButton {
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem;
-            border-radius: 25px;
-            border: none;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-            background-color: #7DC96A;
+        .btn {
+            background-color: #4299e1;
             color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
-        #addButton:hover {
-            background-color: #52FF7B;
-            transform: scale(1.05);
+        .btn:hover {
+            background-color: #2b6cb0;
         }
     </style>
-</head>
 
-<body class="text-center">
-<header>
-    <a th:href="@{/librarian}">
-        <h1>Library "Flower" </h1>
-    </a>
-    <div class="user-actions">
-        <form action="#" th:action="@{/logout}" method="get">
-            <button class="btn btn-danger">Logout</button>
-        </form>
-    </div>
-</header>
-<form class="form_book" method="POST" th:action="@{'/reader/add'}">
-    <label for="email">Email:</label>
-    <input maxlength="30" oninput="validateInput(this)" name="email" type="text" id="email">
-    <br>
-    <label for="password">Password:</label>
-    <input maxlength="30" oninput="validateInput(this)" name="password" type="text" id="password">
-    <br>
-    <label for="name">Name:</label>
-    <input maxlength="30" oninput="validateInput(this)" name="name" type="text" id="name">
-    <br>
-    <label for="surname">Surname:</label>
-    <input maxlength="30" oninput="validateInput(this)" name="surname" type="text" id="surname">
-    <br>
-    <label for="phone">Phone:</label>
-    <input maxlength="30" oninput="validateInput(this)" name="phone" type="text" id="phone">
-    <br>
-    <label for="place_to_live">Place to live:</label>
-    <input maxlength="30" oninput="validateInput(this)" name="place_to_live" type="text" id="place_to_live">
-    <br>
     <script>
         function validateInput(inputField) {
-            var allowedChars = /^[a-zA-Z0-9а-яА-ЯёЁ\s@.]+$/; // букви, цифри та пробіли
+            var allowedChars = /^[a-zA-Z0-9а-яА-ЯёЁ\s@.]+$/;
 
             if (!allowedChars.test(inputField.value)) {
                 alert("Використовуйте букви, цифри, пробіли та @");
@@ -151,8 +78,42 @@
             }
         }
     </script>
-    <br>
-    <input class="btn btn-lg" type="submit" id="addButton" name="return_btn" value="Add">
-</form>
+</head>
+
+<body class="text-center min-h-screen flex flex-col items-center justify-center">
+<header>
+    <a th:href="@{/librarian}" class="text-2xl font-bold">
+        Library "Flower"
+    </a>
+    <div class="user-actions">
+        <form action="#" th:action="@{/logout}" method="get" class="inline">
+            <button class="btn bg-red-600 hover:bg-red-800">Logout</button>
+        </form>
+    </div>
+</header>
+
+<div class="form-container fade-in">
+    <form method="POST" th:action="@{'/reader/add'}">
+        <label for="email" class="block text-xl font-semibold mb-2">Email:</label>
+        <input oninput="validateInput(this)" maxlength="30" name="email" type="text" id="email" class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+        <label for="password" class="block text-xl font-semibold mb-2">Password:</label>
+        <input oninput="validateInput(this)" maxlength="30" name="password" type="text" id="password" class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+        <label for="name" class="block text-xl font-semibold mb-2">Name:</label>
+        <input oninput="validateInput(this)" maxlength="30" name="name" type="text" id="name" class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+        <label for="surname" class="block text-xl font-semibold mb-2">Surname:</label>
+        <input oninput="validateInput(this)" maxlength="30" name="surname" type="text" id="surname" class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+        <label for="phone" class="block text-xl font-semibold mb-2">Phone:</label>
+        <input oninput="validateInput(this)" maxlength="30" name="phone" type="text" id="phone" class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+        <label for="place_to_live" class="block text-xl font-semibold mb-2">Place to live:</label>
+        <input oninput="validateInput(this)" maxlength="30" name="place_to_live" type="text" id="place_to_live" class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+        <input class="btn w-full py-2 px-4 rounded text-white cursor-pointer" type="submit" id="addButton" name="addButton" value="Add">
+    </form>
+</div>
 </body>
 </html>

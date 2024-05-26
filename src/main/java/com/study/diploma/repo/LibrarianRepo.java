@@ -28,6 +28,11 @@ public interface LibrarianRepo extends CrudRepository<Librarian, Long> {
     @Query("UPDATE Librarian l SET l.email = :email, l.password = :password WHERE l.id = :id")
     void updateLibrarianEmailAndPasswordById(String email, String password, Long id);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE Librarian l SET l.email = :email WHERE l.id = :id")
+    void updateLibrarianEmailAndPasswordById(String email, Long id);
+
     @Override
     Optional<Librarian> findById(Long aLong);
 }

@@ -7,6 +7,7 @@ import com.study.diploma.services.BookService;
 import com.study.diploma.services.ReaderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
@@ -38,10 +39,12 @@ public class LibrarianController {
 
     @GetMapping("/librarian")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public String librarianPage(Model model) {
+    public String librarianPage(Model model,
+                                @RequestParam(defaultValue = "0") int bookPage,
+                                @RequestParam(defaultValue = "0") int readerPage) {
 
-        model.addAttribute("readers", readerService.getAll());
-        model.addAttribute("books", bookService.getAll());
+        model.addAttribute("readersPage", readerService.findAll(PageRequest.of(readerPage, 5)));
+        model.addAttribute("booksPage", bookService.getAllBooksPage(PageRequest.of(bookPage, 5)));
         model.addAttribute("booksTop", bookService.getAll().stream()
                 .sorted(Comparator.comparingDouble(Book::getRating).reversed())
                 .limit(5).toList());
@@ -68,6 +71,7 @@ public class LibrarianController {
             attributes.addFlashAttribute(ERROR, "U should avoid empty fields!");
             return new RedirectView("/librarian");
         }
+
         Book book = new Book();
 
         book.setName(name);
@@ -185,7 +189,11 @@ public class LibrarianController {
             attributes.addFlashAttribute(ERROR, "Reader with such email exist!");
             return new RedirectView("/librarian");
         }
-        readerService.update(email, passwordEncoder.encode(password), name, surname, phone, placeToLive, id);
+        if (!password.equals(readerService.getById(id).get().getPassword())) {
+            readerService.update(email, passwordEncoder.encode(password), name, surname, phone, placeToLive, id);
+        } else {
+            readerService.update(email, name, surname, phone, placeToLive, id);
+        }
         attributes.addFlashAttribute(SUCCESS, "Edited successfully");
 
         return new RedirectView("/librarian");

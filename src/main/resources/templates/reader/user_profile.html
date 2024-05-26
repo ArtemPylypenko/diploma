@@ -4,167 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            background-image: url("https://abrakadabra.fun/uploads/posts/2021-12/1640241511_2-abrakadabra-fun-p-zadnii-fon-biblioteka-2.jpg");
-            background-size: cover;
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', sans-serif;
         }
-
         header {
-            background: linear-gradient(90deg, rgba(255, 183, 102, 1) 0%, rgba(255, 140, 0, 1) 100%);
+            background-color: #4a5568;
             color: white;
-            padding: 15px;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 15px 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
         }
-
-        h1 {
-            font-size: 2rem;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .btn {
-            margin-left: 10px;
-            transition: background-color 0.3s, transform 0.3s;
-            border-radius: 25px;
-        }
-
-        .btn-primary {
-            background-color: #3498db;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-            transform: scale(1.1);
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            border: none;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-            transform: scale(1.1);
-        }
-
-        .form_profile {
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
             max-width: 600px;
-            margin: 5% auto 0;
+            min-width: 350px;
+            margin: 5% auto;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 255, 255, 0.8);
+            margin-top: 100px;
         }
-
-        .form_profile label {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-control {
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            background-color: #f5f5f5;
-        }
-
-        #updateProfileButton {
-            background-color: #3498db;
+        .btn {
+            background-color: #4299e1;
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
             margin-bottom: 15px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
         }
-
-        #updateProfileButton:hover {
-            background-color: #2980b9;
-            transform: scale(1.1);
+        .btn:hover {
+            background-color: #2b6cb0;
         }
-
-        label:hover {
-            color: #555;
-        }
-
-        .history_bth {
-            background-color: #32c8b4;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .history_bth:hover {
-            background-color: #32ffb4;
-            transform: scale(1.1);
-        }
-
     </style>
 </head>
-<body class="text-center">
+<body class="text-center min-h-screen flex flex-col items-center justify-center">
 <header>
-    <h1>Profile</h1>
+    <h1 class="text-2xl font-bold">Profile</h1>
     <div class="user-actions">
-        <form th:action="@{'/reader/history'}" method="get">
-            <button class="btn btn-primary history_bth">History</button>
+        <form th:action="@{'/reader/history'}" method="get" class="inline">
+            <button class="btn bg-teal-600 hover:bg-teal-800">History</button>
         </form>
-        <form th:action="@{'/readerBooks'}" method="get">
-            <button class="btn btn-primary">My Books</button>
+        <form th:action="@{'/readerBooks'}" method="get" class="inline">
+            <button class="btn">My Books</button>
         </form>
-        <form th:action="@{'/profile'}" method="get">
-            <button class="btn btn-primary">Profile</button>
+        <form th:action="@{'/profile'}" method="get" class="inline">
+            <button class="btn">Profile</button>
         </form>
-        <form action="#" th:action="@{/logout}" method="get">
-            <button class="btn btn-danger">Logout</button>
+        <form action="#" th:action="@{/logout}" method="get" class="inline">
+            <button class="btn bg-red-600 hover:bg-red-800">Logout</button>
         </form>
     </div>
 </header>
 <div th:if="${message}" class="alert alert-info" role="alert" th:text="${message}"></div>
-<form class="form_profile" th:action="@{/profile/update}" method="post">
+<form class="form-container" th:action="@{/profile/update}" method="post">
     <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" class="form-control" th:value="${user.name}">
+        <label for="name" class="block text-left">Name</label>
+        <input type="text" id="name" name="name" class="form-input mt-1 block w-full" th:value="${user.name}">
     </div>
     <div class="form-group">
-        <label for="surname">Surname</label>
-        <input type="text" id="surname" name="surname" class="form-control" th:value="${user.surname}">
+        <label for="surname" class="block text-left mt-4">Surname</label>
+        <input type="text" id="surname" name="surname" class="form-input mt-1 block w-full" th:value="${user.surname}">
     </div>
     <div class="form-group">
-        <label for="place_to_live">Place to live</label>
-        <input type="text" id="place_to_live" name="place_to_live" class="form-control" th:value="${user.placeToLive}">
+        <label for="place_to_live" class="block text-left mt-4">Place to live</label>
+        <input type="text" id="place_to_live" name="place_to_live" class="form-input mt-1 block w-full" th:value="${user.placeToLive}">
     </div>
     <div class="form-group">
-        <label for="phone">Phone</label>
-        <input type="phone" id="phone" name="phone" class="form-control" th:value="${user.phone}">
+        <label for="phone" class="block text-left mt-4">Phone</label>
+        <input type="phone" id="phone" name="phone" class="form-input mt-1 block w-full" th:value="${user.phone}">
     </div>
     <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" class="form-control" th:value="${user.email}">
+        <label for="email" class="block text-left mt-4">Email</label>
+        <input type="email" id="email" name="email" class="form-input mt-1 block w-full" th:value="${user.email}">
     </div>
     <div class="form-group">
-        <label for="oldPassword">Old Password</label>
-        <input type="password" id="oldPassword" name="oldPassword" class="form-control" required>
+        <label for="oldPassword" class="block text-left mt-4">Old Password</label>
+        <input type="password" id="oldPassword" name="oldPassword" class="form-input mt-1 block w-full" required>
     </div>
     <div class="form-group">
-        <label for="newPassword">New Password</label>
-        <input type="password" id="newPassword" name="newPassword" class="form-control">
+        <label for="newPassword" class="block text-left mt-4">New Password</label>
+        <input type="password" id="newPassword" name="newPassword" class="form-input mt-1 block w-full">
     </div>
-    <button type="submit" id="updateProfileButton" class="btn btn-primary">Update Profile</button>
+    <button type="submit" class="btn w-full mt-4">Update Profile</button>
 </form>
 </body>
 </html>
