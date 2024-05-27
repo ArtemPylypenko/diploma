@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface BookRepo extends CrudRepository<Book, Long> {
     @Override
     Iterable<Book> findAll();
+
     @Query("SELECT b FROM Book b")
     Page<Book> findAllBooks(Pageable pageable);
 
@@ -46,4 +47,7 @@ public interface BookRepo extends CrudRepository<Book, Long> {
 
     @Query("SELECT b FROM Book b WHERE :name MEMBER OF b.genres")
     List<Book> getBookByGenres(String name);
+
+    @Query("SELECT b FROM Book b WHERE LOWER(b.authors) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<Book> getByAuthors(String name);
 }

@@ -134,6 +134,7 @@ public class ReaderController {
         }
         List<Book> result = bookService.getByName(name);
         result.addAll(bookService.getByGenres(name));
+        result.addAll(bookService.getByAuthors(name));
         if (result.isEmpty()) {
             model.addAttribute(ERROR, "we can t find books with such name");
             return "reader/book_list_reader";

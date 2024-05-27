@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -72,5 +73,9 @@ public class BookService implements ClassicalDao<Book> {
 
     public Page<Book> findAll(PageRequest page) {
         return bookRepo.findAllBooks(page);
+    }
+
+    public Collection<? extends Book> getByAuthors(String name) {
+        return bookRepo.getByAuthors(name);
     }
 }
