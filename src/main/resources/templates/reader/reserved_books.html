@@ -28,7 +28,6 @@
         .form-container {
             background-color: rgba(255, 255, 255, 0.9);
             max-width: 600px;
-            min-width: 400px;
             margin: 5% auto;
             padding: 20px;
             border-radius: 15px;
@@ -69,24 +68,6 @@
             padding: 0;
             margin: 0;
         }
-        .alert {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-            padding: 1rem 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .alert-primary {
-            background-color: #4299e1;
-            color: white;
-        }
-        .alert-danger {
-            background-color: #e53e3e;
-            color: white;
-        }
     </style>
 </head>
 <body class="text-center min-h-screen flex flex-col items-center justify-center">
@@ -96,9 +77,6 @@
         <form th:action="@{'/readerBooks'}" method="get" class="inline">
             <button class="btn">My Books</button>
         </form>
-        <form th:action="@{'/reader/reservedBooks'}" method="get" class="inline">
-            <button class="btn">My Reserved</button>
-        </form>
         <form th:action="@{'/profile'}" method="get" class="inline">
             <button class="btn">Profile</button>
         </form>
@@ -107,28 +85,16 @@
         </form>
     </div>
 </header>
-<div th:if="${success}" class="alert alert-primary" role="alert" th:text="${success}"></div>
-<div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
 <div class="form-container">
-    <label class="block text-xl font-semibold mb-2">Search for Books:</label>
-    <form th:action="@{/books/search}" method="get" class="mb-4">
-        <div class="form-group">
-            <label for="name" class="block">Book Title:</label>
-            <input type="text" id="name" name="name" class="form-input mt-1 block w-full">
-        </div>
-        <button type="submit" class="btn w-full mt-4">Search</button>
-    </form>
-    <label class="block text-xl font-semibold mb-2">Book List:</label>
+    <label class="block text-xl font-semibold mb-2">Reserved:</label>
     <ul>
         <li class="list-item" th:each="book : ${books}">
-            <form method="get" th:action="@{'/bookInfo/'+ ${book.getId()} }">
-                <label class="item-title"></label>
+            <form method="POST" th:action="@{'/cancelReservation/'+ ${book.getId()} }">
                 <span th:text="${book.name}"></span>
                 <br>
-                <label class="item-title"></label>
                 <span th:text="${book.authors}"></span>
                 <br>
-                <button type="submit" class="btn w-full mt-4">Check</button>
+                <button type="submit" class="btn w-full mt-4">Cancel</button>
             </form>
         </li>
     </ul>

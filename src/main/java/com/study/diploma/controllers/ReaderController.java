@@ -1,16 +1,13 @@
 package com.study.diploma.controllers;
 
-import com.study.diploma.dto.HistoryDTO;
 import com.study.diploma.entity.Book;
 import com.study.diploma.entity.Comment;
-import com.study.diploma.entity.History;
 import com.study.diploma.entity.Reader;
 import com.study.diploma.services.BookReaderService;
 import com.study.diploma.services.BookService;
 import com.study.diploma.services.HistoryService;
 import com.study.diploma.services.ReaderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,11 +21,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @EnableWebMvc
 @org.springframework.stereotype.Controller
@@ -99,17 +92,17 @@ public class ReaderController {
         return "reader/book_info_reader";
     }
 
-    @PostMapping("/bookTake/{id}")
+    @PostMapping("/bookReserve/{id}")
     @PreAuthorize("hasAuthority('READER')")
     public RedirectView takeBook(@PathVariable("id") Long id, RedirectAttributes attributes) {
         Long loggedReaderId = getLoggedReaderId();
-        if (bookService.getById(id).get().isAvailable()) {
+        if (bookService.getById(id).get().getAvailable() > 0) {
             if (!bookReaderService.existsByBookAndUser(id, loggedReaderId)) {
-                attributes.addFlashAttribute(SUCCESS, "Book added to your books");
+                attributes.addFlashAttribute(SUCCESS, "Book was reserved");
                 bookReaderService.addReaderBook(readerService.getById(loggedReaderId).get(), bookService.getById(id).get());
-                bookService.updateAvailable(false, id);
+                bookService.decreaseAvailable(id);
             } else {
-                attributes.addFlashAttribute(ERROR, "Reader has such book!");
+                attributes.addFlashAttribute(ERROR, "You have or reserved this book book!");
             }
         } else {
             attributes.addFlashAttribute(ERROR, "Book is not available!");
@@ -121,7 +114,7 @@ public class ReaderController {
     @PreAuthorize("hasAuthority('READER')")
     public String myBooks(Model model) {
         model.addAttribute("books", readerService.getById(getLoggedReaderId()).get().getBooks().stream().filter(book ->
-                !book.isAvailable()));
+                !(book.getAvailable() > 0)));
         return "reader/my_book_reader";
     }
 
@@ -132,7 +125,7 @@ public class ReaderController {
             model.addAttribute(MESSAGE, "we can t find books with such name");
             return "reader/book_list_reader";
         }
-        List<Book> result = bookService.getByName(name);
+        Set<Book> result = new HashSet<>(bookService.getByName(name));
         result.addAll(bookService.getByGenres(name));
         result.addAll(bookService.getByAuthors(name));
         if (result.isEmpty()) {
@@ -148,69 +141,32 @@ public class ReaderController {
     public RedirectView myBooks(@PathVariable("id") Long id, @RequestParam("rating") Double rating, @RequestParam("comment") String comment) {
         Reader reader = readerService.getById(getLoggedReaderId()).get();
         Book book = bookService.getById(id).get();
-        bookService.updateAvailable(true, id);
+        bookService.increaseAvailable(id);
         //bookService.updateRating(rating, id);
 
         reader.removeBook(book);
         book.removeReader(reader);
         historyService.updateReturn();
-        bookReaderService.deteleReaderBook(reader, book);
+        bookReaderService.deleteReaderBook(reader, book);
         historyService.updateReturn(rating, reader.getId(), book.getId(), comment);
         bookService.updateRating(historyService.getAVGRating(id), id);
         return new RedirectView("/reader");
     }
 
-    @GetMapping("reader/history")
+    @PostMapping("/cancelReservation/{id}")
     @PreAuthorize("hasAuthority('READER')")
-    public String myHistory(Model model) {
-        List<HistoryDTO> dtos = new ArrayList<>();
-        historyService.getAllByReader(getLoggedReaderId()).stream().filter(history ->
-                        history.getReturnedAt() != null && history.getCreatedAt() != null)
-                .forEach(h -> dtos.add(historyService.historyToDto(h)));
-        model.addAttribute("history", dtos);
-        return "reader/book_history_reader";
+    public RedirectView cancelReservation(@PathVariable("id") Long bookId) {
+        bookReaderService.deleteReaderBook(getLoggedReaderId(), bookId);
+        return new RedirectView("/reader");
     }
 
-    @GetMapping("reader/historySorted")
+    @GetMapping("/reader/reservedBooks")
     @PreAuthorize("hasAuthority('READER')")
-    public String myHistorySorted(Model model, @RequestParam("dateTimeBefore") LocalDateTime before, @RequestParam("dateTimeAfter") LocalDateTime after) {
-        List<HistoryDTO> dtos = new ArrayList<>();
-        historyService.getAllByReader(getLoggedReaderId()).stream().filter(history ->
-                        history.getReturnedAt() != null && history.getCreatedAt() != null)
-                .filter(h2 ->
-                        h2.getCreatedAt().isAfter(after) && h2.getReturnedAt().isBefore(before))
-                .forEach(h -> dtos.add(historyService.historyToDto(h)));
-        model.addAttribute("history", dtos);
-        return "reader/book_history_reader";
+    public String reservedBooks(Model model) {
+        model.addAttribute("books", bookReaderService.getReservedBooks(getLoggedReaderId()));
+        return "reader/reserved_books";
     }
 
-    @GetMapping("reader/historySortUp")
-    @PreAuthorize("hasAuthority('READER')")
-    public String myHistorySortUp(Model model) {
-        List<History> allByReader = historyService.getAllByReader(getLoggedReaderId()).stream().filter(history ->
-                history.getReturnedAt() != null && history.getCreatedAt() != null).toList();
-        List<HistoryDTO> dtos = new ArrayList<>();
-        allByReader.forEach(h -> dtos.add(historyService.historyToDto(h)));
-
-        List<HistoryDTO> sorted = dtos.stream().sorted(Comparator.comparing(HistoryDTO::getCreatedAt)).toList();
-
-        model.addAttribute("history", sorted);
-        return "reader/book_history_reader";
-    }
-
-    @GetMapping("reader/historySortDown")
-    @PreAuthorize("hasAuthority('READER')")
-    public String myHistorySortDown(Model model) {
-        List<History> allByReader = historyService.getAllByReader(getLoggedReaderId()).stream().filter(history ->
-                history.getReturnedAt() != null && history.getCreatedAt() != null).toList();
-        List<HistoryDTO> dtos = new ArrayList<>();
-        allByReader.forEach(h -> dtos.add(historyService.historyToDto(h)));
-
-        List<HistoryDTO> sorted = dtos.stream().sorted(Comparator.comparing(HistoryDTO::getCreatedAt).reversed()).toList();
-
-        model.addAttribute("history", sorted);
-        return "reader/book_history_reader";
-    }
 
     private Long getLoggedReaderId() {
         return readerService.getByEmail(getLoggedUserDetails().getUsername()).get().getId();

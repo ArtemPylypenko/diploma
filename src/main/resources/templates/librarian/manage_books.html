@@ -127,9 +127,6 @@
         <form action="/excel-reports/books-popularity" method="get" class="inline">
             <button class="btn">Generate Books Popularity Report</button>
         </form>
-        <form action="#" th:action="@{/manageBooks}" method="get" class="inline">
-            <button class="btn bg-red-600 hover:bg-red-800">ManageBooks</button>
-        </form>
     </div>
 </header>
 
@@ -138,42 +135,40 @@
 
 <div class="grid-container mt-20">
     <div class="form-container fade-in">
-        <form method="get" th:action="@{'/reader/add'}">
-            <input class="btn w-full" type="submit" id="addReaderButton" value="Add Reader">
-        </form>
-        <label class="block text-xl font-semibold mb-2">Reader List:</label>
+        <label class="block text-xl font-semibold mb-2">Reserved Books:</label>
         <ul>
-            <li class="list-item mb-4 p-4" th:each="reader : ${readersPage.getContent()}">
-                <form method="get" th:action="@{'/reader/edit/' + ${reader.getId()}}">
-                    <label th:text="${reader.name}" class="item-title block"></label>
-                    <label th:text="${reader.surname}" class="item-title block"></label>
-                    <input type="submit" value="Edit" class="btn w-full mt-2">
+            <li class="list-item mb-4 p-4" th:each="reserved : ${reservedBooks.getContent()}">
+                <label th:text="${reserved.reader.name}" class="item-title block"></label>
+                <label th:text="${reserved.book.name}" class="item-title block"></label>
+                <form method="post" th:action="@{'/reservedGive/' + ${reserved.getId()}}">
+                    <input type="submit" value="Give" class="btn w-full mt-2">
+                </form>
+                <form method="post" th:action="@{'/reservedCancel/' + ${reserved.getId()}}">
+                    <input type="submit" value="Cancel" class="btn w-full mt-2">
                 </form>
             </li>
         </ul>
         <div class="pagination">
-            <a th:if="${readersPage.hasPrevious()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number} + '&readerPage=' + ${readersPage.number - 1}}" class="btn">Previous</a>
-            <span>Page <span th:text="${readersPage.number + 1}"></span> of <span th:text="${readersPage.totalPages}"></span></span>
-            <a th:if="${readersPage.hasNext()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number} + '&readerPage=' + ${readersPage.number + 1}}" class="btn">Next</a>
+            <a th:if="${reservedBooks.hasPrevious()}" th:href="@{'/librarian?givenBooks=' + ${givenBooks.number} + '&reservedBooks=' + ${reservedBooks.number - 1}}" class="btn">Previous</a>
+            <span>Page <span th:text="${reservedBooks.number + 1}"></span> of <span th:text="${reservedBooks.totalPages}"></span></span>
+            <a th:if="${reservedBooks.hasNext()}" th:href="@{'/librarian?givenBooks=' + ${givenBooks.number} + '&reservedBooks=' + ${reservedBooks.number + 1}}" class="btn">Next</a>
         </div>
     </div>
     <div class="form-container fade-in">
-        <form method="get" th:action="@{'/book/add'}">
-            <input class="btn w-full" type="submit" id="addBookButton" value="Add Book">
-        </form>
-        <label class="block text-xl font-semibold mb-2">Book List:</label>
+        <label class="block text-xl font-semibold mb-2">Given Books:</label>
         <ul>
-            <li class="list-item mb-4 p-4" th:each="book : ${booksPage.getContent()}">
-                <form method="get" th:action="@{'/book/edit/' + ${book.getId()}}">
-                    <label th:text="${book.name}" class="item-title block"></label>
-                    <input type="submit" value="Edit" class="btn w-full mt-2">
+            <li class="list-item mb-4 p-4" th:each="given : ${givenBooks.getContent()}">
+                <label th:text="${given.reader.name}" class="item-title block"></label>
+                <label th:text="${given.book.name}" class="item-title block"></label>
+                <form method="post" th:action="@{'/takeBack/' + ${given.getId()}}">
+                    <input type="submit" value="Take back" class="btn w-full mt-2">
                 </form>
             </li>
         </ul>
         <div class="pagination">
-            <a th:if="${booksPage.hasPrevious()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number - 1} + '&readerPage=' + ${readersPage.number}}" class="btn">Previous</a>
-            <span>Page <span th:text="${booksPage.number + 1}"></span> of <span th:text="${booksPage.totalPages}"></span></span>
-            <a th:if="${booksPage.hasNext()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number + 1} + '&readerPage=' + ${readersPage.number}}" class="btn">Next</a>
+            <a th:if="${givenBooks.hasPrevious()}" th:href="@{'/librarian?givenBooks=' + ${givenBooks.number - 1} + '&reservedBooks=' + ${reservedBooks.number}}" class="btn">Previous</a>
+            <span>Page <span th:text="${givenBooks.number + 1}"></span> of <span th:text="${givenBooks.totalPages}"></span></span>
+            <a th:if="${givenBooks.hasNext()}" th:href="@{'/librarian?givenBooks=' + ${givenBooks.number + 1} + '&reservedBooks=' + ${reservedBooks.number}}" class="btn">Next</a>
         </div>
     </div>
 </div>

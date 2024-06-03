@@ -38,8 +38,11 @@ public class Book extends BaseEntity {
     @Column(name = "given_by")
     private String givenBy;
 
+    @Column(name = "exemplars")
+    private Integer exemplars;
+
     @Column(name = "available")
-    private boolean available;
+    private Integer available;
 
     @Column(name = "rating")
     private Double rating = 3D;

@@ -3,6 +3,7 @@ package com.study.diploma.controllers;
 import com.study.diploma.entity.Book;
 import com.study.diploma.entity.Reader;
 import com.study.diploma.entity.Role;
+import com.study.diploma.services.BookReaderService;
 import com.study.diploma.services.BookService;
 import com.study.diploma.services.ReaderService;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +30,13 @@ import java.util.Objects;
 public class LibrarianController {
     private final ReaderService readerService;
     private final BookService bookService;
+    private final BookReaderService bookReaderService;
 
     private static final String SUCCESS = "success";
     private static final String ERROR = "error";
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
     @GetMapping("/librarian")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
@@ -52,6 +53,41 @@ public class LibrarianController {
         return "librarian/main_page_librarian";
     }
 
+    @GetMapping("/manageBooks")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    public String manageBooks(Model model,
+                              @RequestParam(defaultValue = "0") int reservedBooks,
+                              @RequestParam(defaultValue = "0") int givenBooks) {
+
+        model.addAttribute("reservedBooks", bookService.getReservedBooks(PageRequest.of(reservedBooks, 5)));
+        model.addAttribute("givenBooks", bookService.getGivenBooks(PageRequest.of(givenBooks, 5)));
+
+        return "librarian/manage_books";
+    }
+
+    @PostMapping("/reservedGive/{id}")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    public RedirectView reservedGive(@PathVariable("id") Long id) {
+        bookReaderService.updateGiveTime(id);
+        return new RedirectView("/manageBooks");
+    }
+
+    @PostMapping("/reservedCancel/{id}")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    public RedirectView reservedCancel(@PathVariable("id") Long id) {
+        bookService.increaseAvailable(bookReaderService.getById(id).getBook().getId());
+        bookReaderService.deleteReaderBook(id);
+        return new RedirectView("/manageBooks");
+    }
+
+    @PostMapping("/takeBack/{id}")
+    @PreAuthorize("hasAuthority('LIBRARIAN')")
+    public RedirectView takeBack(@PathVariable("id") Long id) {
+        bookService.increaseAvailable(bookReaderService.getById(id).getBook().getId());
+        bookReaderService.deleteReaderBook(id);
+        return new RedirectView("/manageBooks");
+    }
+
     @GetMapping("/book/add")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public String getAddBookPage() {
@@ -66,8 +102,9 @@ public class LibrarianController {
                                 @RequestParam("given_by") String givenBy,
                                 @RequestParam("isbn") String isbn,
                                 @RequestParam("publication") String publication,
+                                @RequestParam("exemplars") Integer exemplars,
                                 RedirectAttributes attributes) {
-        if (Objects.equals(name, "") || Objects.equals(authors, "") || Objects.equals(givenBy, "") || Objects.equals(isbn, "")) {
+        if (Objects.equals(name, "") || Objects.equals(authors, "") || Objects.equals(givenBy, "") || Objects.equals(isbn, "") || Objects.equals(exemplars, 0)) {
             attributes.addFlashAttribute(ERROR, "U should avoid empty fields!");
             return new RedirectView("/librarian");
         }
@@ -81,7 +118,8 @@ public class LibrarianController {
         book.setIsbn(isbn);
         book.setPublication(Integer.parseInt(publication));
         book.setRating(3D);
-        book.setAvailable(true);
+        book.setExemplars(exemplars);
+        book.setAvailable(exemplars);
 
         bookService.save(book);
         return new RedirectView("/librarian");
@@ -103,6 +141,7 @@ public class LibrarianController {
                                  @RequestParam("publication") int publication,
                                  @RequestParam("isbn") String isbn,
                                  @PathVariable(value = "id") Long id,
+                                 @RequestParam("exemplars") Integer exemplars,
                                  RedirectAttributes attributes) {
         if (Objects.equals(name, "") || Objects.equals(authors, "") || Objects.equals(givenBy, "")
                 || Objects.equals(isbn, "")) {
@@ -110,7 +149,7 @@ public class LibrarianController {
             return new RedirectView("/librarian");
         }
 
-        bookService.updateById(name, authors, publication, isbn, givenBy, id);
+        bookService.updateById(name, authors, publication, isbn, givenBy, id, exemplars);
         attributes.addFlashAttribute(SUCCESS, "Edited successfully");
 
         return new RedirectView("/librarian");

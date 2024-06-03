@@ -59,14 +59,21 @@
             transform: scale(1.05);
         }
         .item-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             margin-bottom: 5px;
             color: #2d3748;
+            font-weight: bold;
         }
         ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
+        }
+        .book-info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 20px;
+            align-items: center;
         }
     </style>
 </head>
@@ -74,9 +81,6 @@
 <header>
     <a th:href="@{/reader}" class="text-2xl font-bold">Library "Flower"</a>
     <div class="user-actions">
-        <form th:action="@{'/reader/history'}" method="get" class="inline">
-            <button class="btn bg-teal-600 hover:bg-teal-800">History</button>
-        </form>
         <form th:action="@{'/readerBooks'}" method="get" class="inline">
             <button class="btn">My Books</button>
         </form>
@@ -88,28 +92,29 @@
         </form>
     </div>
 </header>
-<form class="form-container" method="POST" th:action="@{'/bookTake/' + ${book.id}}">
-    <label class="item-title">Book title:</label>
-    <span th:text="${book.name}"></span>
-    <br>
-    <label class="item-title">Authors:</label>
-    <span th:text="${book.authors}"></span>
-    <br>
-    <label class="item-title">Publishing house:</label>
-    <span th:text="${book.givenBy}"></span>
-    <br>
-    <label class="item-title">Year of publication:</label>
-    <span th:text="${book.publication}"></span>
-    <br>
-    <label class="item-title">ISBN:</label>
-    <span th:text="${book.isbn}"></span>
-    <br>
-    <label class="item-title">Rating:</label>
-    <span th:text="${book.rating}"></span>
-    <br>
-    <button type="submit" class="btn w-full">Take a Book</button>
+<form class="form-container" method="POST" th:action="@{'/bookReserve/' + ${book.id}}">
+    <div class="book-info-grid">
+        <label class="item-title">Title:</label>
+        <span th:text="${book.name}"></span>
+
+        <label class="item-title">Authors:</label>
+        <span th:text="${book.authors}"></span>
+
+        <label class="item-title">Publishing:</label>
+        <span th:text="${book.givenBy}"></span>
+
+        <label class="item-title">Year:</label>
+        <span th:text="${book.publication}"></span>
+
+        <label class="item-title">ISBN:</label>
+        <span th:text="${book.isbn}"></span>
+
+        <label class="item-title">Rating:</label>
+        <span th:text="${book.rating}"></span>
+    </div>
+    <button type="submit" class="btn w-full mt-4">Make a reservation</button>
 </form>
-<div class="comments-section form-container mt-6">
+<div class="comments-section form-container mt-4">
     <h3 class="item-title">Comments</h3>
     <div th:each="comment : ${comments}">
         <div class="list-item">

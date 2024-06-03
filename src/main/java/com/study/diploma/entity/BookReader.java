@@ -27,6 +27,12 @@ public class BookReader extends BaseEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "given_at")
+    private LocalDateTime givenAt;
+
+    @Column(name = "returned_at")
+    private LocalDateTime returnedAt;
+
+    @Column(name = "bring_back")
+    private Boolean bringBack;
 }

@@ -1,6 +1,7 @@
 package com.study.diploma.services;
 
 import com.study.diploma.entity.Book;
+import com.study.diploma.entity.BookReader;
 import com.study.diploma.repo.BookReaderRepo;
 import com.study.diploma.repo.BookRepo;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 public class BookService implements ClassicalDao<Book> {
     private final BookRepo bookRepo;
-    private final BookReaderRepo bookHistoryRepo;
+    private final BookReaderRepo bookReaderRepo;
 
     @Override
     public Book save(Book book) {
@@ -26,7 +27,7 @@ public class BookService implements ClassicalDao<Book> {
 
     @Override
     public void delete(Book book) {
-        bookHistoryRepo.deleteByBook(book);
+        bookReaderRepo.deleteByBook(book);
         bookRepo.deleteById(book.getId());
     }
 
@@ -47,12 +48,16 @@ public class BookService implements ClassicalDao<Book> {
         delete(getById(id).get());
     }
 
-    public void updateById(String name, String authors, int publication, String isbn, String given_by, Long id) {
-        bookRepo.updateBook(name, authors, publication, isbn, given_by, id);
+    public void updateById(String name, String authors, int publication, String isbn, String given_by, Long id, Integer exemplars) {
+        bookRepo.updateBook(name, authors, publication, isbn, given_by, id, exemplars, exemplars);
     }
 
-    public void updateAvailable(boolean available, Long id) {
-        bookRepo.updateAvailable(available, id);
+    public void increaseAvailable(Long id) {
+        bookRepo.increaseAvailable(id);
+    }
+
+    public void decreaseAvailable(Long id) {
+        bookRepo.decreaseAvailable(id);
     }
 
     public void updateRating(Double rating, Long id) {
@@ -77,5 +82,13 @@ public class BookService implements ClassicalDao<Book> {
 
     public Collection<? extends Book> getByAuthors(String name) {
         return bookRepo.getByAuthors(name);
+    }
+
+    public Page<BookReader> getReservedBooks(PageRequest of) {
+        return bookReaderRepo.getReservedBooks(of);
+    }
+
+    public Page<BookReader> getGivenBooks(PageRequest of) {
+        return bookReaderRepo.getGivenBooks(of);
     }
 }

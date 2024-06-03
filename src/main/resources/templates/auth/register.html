@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Library "Flower" - Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            min-width: 400px;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 100px;
+        }
+
+        .btn {
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2b6cb0;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+    </style>
+</head>
+<body class="text-center min-h-screen flex flex-col items-center justify-center">
+<div class="form-container">
+    <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+    <h2 class="text-2xl font-bold mb-4">Register</h2>
+    <form th:action="@{/register}" method="post">
+        <div class="form-group">
+            <label for="email" class="form-label">Email:</label>
+            <input required type="email" id="email" name="email" class="form-input">
+        </div>
+        <div class="form-group">
+            <label for="password" class="form-label">Password:</label>
+            <input required type="password" id="password" name="password" class="form-input">
+        </div>
+        <div class="form-group">
+            <label for="name" class="block text-left">Name</label>
+            <input required type="text" id="name" name="name" class="form-input mt-1 block w-full">
+        </div>
+        <div class="form-group">
+            <label for="surname" class="block text-left mt-4">Surname</label>
+            <input required type="text" id="surname" name="surname" class="form-input mt-1 block w-full">
+        </div>
+        <div class="form-group">
+            <label for="place_to_live" class="block text-left mt-4">Place to live</label>
+            <input required type="text" id="place_to_live" name="place_to_live" class="form-input mt-1 block w-full">
+        </div>
+        <div class="form-group">
+            <label for="phone" class="block text-left mt-4">Phone</label>
+            <input required type="phone" id="phone" name="phone" class="form-input mt-1 block w-full">
+        </div>
+        <button type="submit" class="btn w-full mt-4">Register</button>
+    </form>
+</div>
+</body>
+</html>
