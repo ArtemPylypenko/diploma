@@ -28,6 +28,7 @@
         .form-container {
             background-color: rgba(255, 255, 255, 0.9);
             max-width: 600px;
+            min-width: 400px;
             margin: 5% auto;
             padding: 20px;
             border-radius: 15px;
@@ -76,6 +77,9 @@
     <div class="user-actions">
         <form th:action="@{'/readerBooks'}" method="get" class="inline">
             <button class="btn">My Books</button>
+        </form>
+        <form th:action="@{'/reader/reservedBooks'}" method="get" class="inline">
+            <button class="btn">My Reserved</button>
         </form>
         <form th:action="@{'/profile'}" method="get" class="inline">
             <button class="btn">Profile</button>

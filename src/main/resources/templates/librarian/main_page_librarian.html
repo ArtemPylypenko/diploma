@@ -48,8 +48,12 @@
         }
 
         @keyframes fadeIn {
-            0% { opacity:0; }
-            100% { opacity:1; }
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
         }
 
         .btn {
@@ -121,11 +125,11 @@
         <form action="#" th:action="@{/logout}" method="get" class="inline">
             <button class="btn bg-red-600 hover:bg-red-800">Logout</button>
         </form>
-        <form action="/excel-reports/books-not-returned" method="get" class="inline">
-            <button class="btn">Generate Books Not Returned Report</button>
+        <form action="/excel-reports/books-canceled" method="get" class="inline">
+            <button class="btn">Canceled Report</button>
         </form>
-        <form action="/excel-reports/books-popularity" method="get" class="inline">
-            <button class="btn">Generate Books Popularity Report</button>
+        <form action="/excel-reports/books-history" method="get" class="inline">
+            <button class="btn">History Report</button>
         </form>
         <form action="#" th:action="@{/manageBooks}" method="get" class="inline">
             <button class="btn bg-red-600 hover:bg-red-800">ManageBooks</button>
@@ -152,9 +156,14 @@
             </li>
         </ul>
         <div class="pagination">
-            <a th:if="${readersPage.hasPrevious()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number} + '&readerPage=' + ${readersPage.number - 1}}" class="btn">Previous</a>
-            <span>Page <span th:text="${readersPage.number + 1}"></span> of <span th:text="${readersPage.totalPages}"></span></span>
-            <a th:if="${readersPage.hasNext()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number} + '&readerPage=' + ${readersPage.number + 1}}" class="btn">Next</a>
+            <a th:if="${readersPage.hasPrevious()}"
+               th:href="@{'/librarian?bookPage=' + ${booksPage.number} + '&readerPage=' + ${readersPage.number - 1}}"
+               class="btn">Previous</a>
+            <span>Page <span th:text="${readersPage.number + 1}"></span> of <span
+                    th:text="${readersPage.totalPages}"></span></span>
+            <a th:if="${readersPage.hasNext()}"
+               th:href="@{'/librarian?bookPage=' + ${booksPage.number} + '&readerPage=' + ${readersPage.number + 1}}"
+               class="btn">Next</a>
         </div>
     </div>
     <div class="form-container fade-in">
@@ -171,9 +180,14 @@
             </li>
         </ul>
         <div class="pagination">
-            <a th:if="${booksPage.hasPrevious()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number - 1} + '&readerPage=' + ${readersPage.number}}" class="btn">Previous</a>
-            <span>Page <span th:text="${booksPage.number + 1}"></span> of <span th:text="${booksPage.totalPages}"></span></span>
-            <a th:if="${booksPage.hasNext()}" th:href="@{'/librarian?bookPage=' + ${booksPage.number + 1} + '&readerPage=' + ${readersPage.number}}" class="btn">Next</a>
+            <a th:if="${booksPage.hasPrevious()}"
+               th:href="@{'/librarian?bookPage=' + ${booksPage.number - 1} + '&readerPage=' + ${readersPage.number}}"
+               class="btn">Previous</a>
+            <span>Page <span th:text="${booksPage.number + 1}"></span> of <span
+                    th:text="${booksPage.totalPages}"></span></span>
+            <a th:if="${booksPage.hasNext()}"
+               th:href="@{'/librarian?bookPage=' + ${booksPage.number + 1} + '&readerPage=' + ${readersPage.number}}"
+               class="btn">Next</a>
         </div>
     </div>
 </div>

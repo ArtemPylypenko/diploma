@@ -73,4 +73,7 @@ public interface BookReaderRepo extends CrudRepository<BookReader, Long> {
 
     @Query(value = "SELECT br FROM BookReader br WHERE br.id = :id")
     BookReader getById(Long id);
+
+    @Query(value = "SELECT br.book FROM BookReader br WHERE br.reader.id = :id AND br.givenAt IS NOT NULL")
+    List<Book> getReadersBooks(Long id);
 }

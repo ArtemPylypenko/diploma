@@ -72,7 +72,6 @@ public class LoginController {
 
     @GetMapping("/afterLogin")
     public RedirectView afterLogin() {
-        historyService.updateReturn();
         Role role = Role.valueOf(getLoggedUserRole());
         return switch (role) {
             case ADMIN -> new RedirectView("/admin");

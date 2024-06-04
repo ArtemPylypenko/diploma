@@ -51,10 +51,13 @@
 </head>
 <body class="text-center min-h-screen flex flex-col items-center justify-center">
 <header>
-    <h1 class="text-2xl font-bold">Profile</h1>
+    <a th:href="@{/reader}" class="text-2xl font-bold">Library "Flower"</a>
     <div class="user-actions">
         <form th:action="@{'/readerBooks'}" method="get" class="inline">
             <button class="btn">My Books</button>
+        </form>
+        <form th:action="@{'/reader/reservedBooks'}" method="get" class="inline">
+            <button class="btn">My Reserved</button>
         </form>
         <form th:action="@{'/profile'}" method="get" class="inline">
             <button class="btn">Profile</button>
@@ -85,14 +88,6 @@
     <div class="form-group">
         <label for="email" class="block text-left mt-4">Email</label>
         <input type="email" id="email" name="email" class="form-input mt-1 block w-full" th:value="${user.email}">
-    </div>
-    <div class="form-group">
-        <label for="oldPassword" class="block text-left mt-4">Old Password</label>
-        <input type="password" id="oldPassword" name="oldPassword" class="form-input mt-1 block w-full" required>
-    </div>
-    <div class="form-group">
-        <label for="newPassword" class="block text-left mt-4">New Password</label>
-        <input type="password" id="newPassword" name="newPassword" class="form-input mt-1 block w-full">
     </div>
     <button type="submit" class="btn w-full mt-4">Update Profile</button>
 </form>

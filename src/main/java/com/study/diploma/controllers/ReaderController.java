@@ -8,10 +8,12 @@ import com.study.diploma.services.BookService;
 import com.study.diploma.services.HistoryService;
 import com.study.diploma.services.ReaderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +39,9 @@ public class ReaderController {
     private static final String ERROR = "error";
     private static final String MESSAGE = "message";
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/reader")
     @PreAuthorize("hasAuthority('READER')")
     public String readerPage(Model model) {
@@ -57,19 +62,12 @@ public class ReaderController {
                                 @RequestParam("surname") String surname,
                                 @RequestParam("phone") String phone,
                                 @RequestParam("email") String email,
-                                @RequestParam("oldPassword") String oldPassword,
-                                @RequestParam("newPassword") String newPassword,
                                 RedirectAttributes attributes) {
-        if (Objects.equals(name, "") || Objects.equals(surname, "") || Objects.equals(phone, "") || Objects.equals(email, "")
-                || Objects.equals(oldPassword, "")) {
+        if (Objects.equals(name, "") || Objects.equals(surname, "") || Objects.equals(phone, "") || Objects.equals(email, "")) {
             attributes.addFlashAttribute(MESSAGE, "U should avoid empty fields!");
             return new RedirectView("/profile");
         }
-        if (!readerService.getById(getLoggedReaderId()).get().getPassword().equals(oldPassword)) {
-            attributes.addFlashAttribute(MESSAGE, "Old password should equal to your current password");
-            return new RedirectView("/profile");
-        }
-        readerService.updateReader(getLoggedReaderId(), name, surname, phone, email, newPassword.isEmpty() ? oldPassword : newPassword);
+        readerService.updateReader(getLoggedReaderId(), name, surname, phone, email);
         attributes.addFlashAttribute(SUCCESS, "Changes were applied");
 
         return new RedirectView("/reader");
@@ -113,8 +111,7 @@ public class ReaderController {
     @GetMapping("/readerBooks")
     @PreAuthorize("hasAuthority('READER')")
     public String myBooks(Model model) {
-        model.addAttribute("books", readerService.getById(getLoggedReaderId()).get().getBooks().stream().filter(book ->
-                !(book.getAvailable() > 0)));
+        model.addAttribute("books", bookReaderService.getReadersBooks(getLoggedReaderId()));
         return "reader/my_book_reader";
     }
 
@@ -146,7 +143,6 @@ public class ReaderController {
 
         reader.removeBook(book);
         book.removeReader(reader);
-        historyService.updateReturn();
         bookReaderService.deleteReaderBook(reader, book);
         historyService.updateReturn(rating, reader.getId(), book.getId(), comment);
         bookService.updateRating(historyService.getAVGRating(id), id);

@@ -5,6 +5,7 @@ import com.study.diploma.entity.Reader;
 import com.study.diploma.entity.Role;
 import com.study.diploma.services.BookReaderService;
 import com.study.diploma.services.BookService;
+import com.study.diploma.services.HistoryService;
 import com.study.diploma.services.ReaderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class LibrarianController {
     private final ReaderService readerService;
     private final BookService bookService;
     private final BookReaderService bookReaderService;
+    private final HistoryService historyService;
 
     private static final String SUCCESS = "success";
     private static final String ERROR = "error";
@@ -76,14 +78,18 @@ public class LibrarianController {
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public RedirectView reservedCancel(@PathVariable("id") Long id) {
         bookService.increaseAvailable(bookReaderService.getById(id).getBook().getId());
-        bookReaderService.deleteReaderBook(id);
+        bookReaderService.cancelReaderBook(id);
         return new RedirectView("/manageBooks");
     }
 
     @PostMapping("/takeBack/{id}")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
     public RedirectView takeBack(@PathVariable("id") Long id) {
-        bookService.increaseAvailable(bookReaderService.getById(id).getBook().getId());
+        Long bookId = bookReaderService.getById(id).getBook().getId();
+        Long readerId = bookReaderService.getById(id).getReader().getId();
+
+        bookService.increaseAvailable(bookId);
+        historyService.updateReturnAt(readerId, bookId);
         bookReaderService.deleteReaderBook(id);
         return new RedirectView("/manageBooks");
     }

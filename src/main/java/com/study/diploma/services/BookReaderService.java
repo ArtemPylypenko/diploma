@@ -51,6 +51,7 @@ public class BookReaderService {
 
     public void updateGiveTime(Long id) {
         bookReaderRepo.updateGiveTime(id);
+        historyService.updateGivenAt(bookReaderRepo.getById(id).getReader().getId(), bookReaderRepo.getById(id).getBook().getId());
     }
 
     public void updateReturnTime(Long book, Long reader) {
@@ -69,6 +70,10 @@ public class BookReaderService {
     public void deleteReaderBook(Long id) {
         bookReaderRepo.deleteReaderBook(id);
     }
+    public void cancelReaderBook(Long id) {
+        historyService.setCanceled(getById(id).getReader().getId(),getById(id).getBook().getId());
+        deleteReaderBook(id);
+    }
 
     public Double getAVGBookRating(Book book) {
         return bookReaderRepo.getAvgRating(book);
@@ -86,5 +91,9 @@ public class BookReaderService {
 
     public BookReader getById(Long id) {
         return bookReaderRepo.getById(id);
+    }
+
+    public List<Book> getReadersBooks(Long readerId) {
+        return bookReaderRepo.getReadersBooks(readerId);
     }
 }

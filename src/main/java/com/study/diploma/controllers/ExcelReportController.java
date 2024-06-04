@@ -1,8 +1,6 @@
 package com.study.diploma.controllers;
 
-import com.study.diploma.entity.Book;
 import com.study.diploma.entity.History;
-import com.study.diploma.services.BookService;
 import com.study.diploma.services.ExcelReportService;
 import com.study.diploma.services.HistoryService;
 import com.study.diploma.services.ReaderService;
@@ -16,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/excel-reports")
@@ -28,26 +24,19 @@ public class ExcelReportController {
     private ExcelReportService excelReportService;
 
     @Autowired
-    private BookService bookService;
-
-    @Autowired
     private HistoryService historyService;
 
     @Autowired
     private ReaderService readerService;
 
-
-    // /excel-reports/books-not-returned
-    @GetMapping("/books-not-returned")
+    @GetMapping("/books-canceled")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public ResponseEntity<byte[]> downloadBooksNotReturnedReport() {
+    public ResponseEntity<byte[]> downloadCanceled() {
         try {
-            List<History> history = historyService.getAllNotReturned();
-            Map<Book, String> reportMap = new HashMap<>();
-            history.forEach(h -> reportMap.put(bookService.getById(h.getBook()).get(), readerService.getById(h.getReader()).get().getName()));
-            byte[] report = excelReportService.generateBooksNotReturnedReport(reportMap);
+            List<History> history = historyService.getCanceled();
+            byte[] report = excelReportService.generateCanceledReport(history);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=books_not_returned.xlsx")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reservations_canceled.xlsx")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(report);
         } catch (IOException e) {
@@ -55,34 +44,19 @@ public class ExcelReportController {
         }
     }
 
-    // /excel-reports/books-popularity
-    @GetMapping("/books-popularity")
+    @GetMapping("/books-history")
     @PreAuthorize("hasAuthority('LIBRARIAN')")
-    public ResponseEntity<byte[]> downloadBooksPopularityReport() {
+    public ResponseEntity<byte[]> downloadHistory() {
         try {
-            List<Book> books = bookService.getAllByRating();
-            byte[] report = excelReportService.generateBooksPopularityReport(books);
+            List<History> history = historyService.getAllReturned();
+            byte[] report = excelReportService.generateBookHistoryReport(history);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=books_popularity.xlsx")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=books_history.xlsx")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(report);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);
         }
     }
-//
-//    @GetMapping("/readers-unreturned-books")
-//    public ResponseEntity<byte[]> downloadReadersWithBooksNotReturnedReport() {
-//        try {
-//            List<Reader> readers = readerService.getReadersWithBooksNotReturned();
-//            byte[] report = excelReportService.generateReadersWithBooksNotReturnedReport(readers);
-//            return ResponseEntity.ok()
-//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=readers_unreturned_books.xlsx")
-//                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                    .body(report);
-//        } catch (IOException e) {
-//            return ResponseEntity.status(500).body(null);
-//        }
-//    }
 }
 

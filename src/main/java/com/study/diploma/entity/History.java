@@ -26,12 +26,17 @@ public class History extends BaseEntity {
     @Column(name = "returned_at")
     private LocalDateTime returnedAt;
 
+    @Column(name = "given_at")
+    private LocalDateTime givenAt;
 
     @Column(name = "reader_id")
     private Long reader;
 
     @Column(name = "book_id")
     private Long book;
+
+    @Column(name = "is_canceled")
+    private Boolean isCanceled = false;
 
     @Column(name = "rating")
     private Double rating;

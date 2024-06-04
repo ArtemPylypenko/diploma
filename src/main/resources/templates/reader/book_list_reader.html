@@ -12,6 +12,7 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             font-family: 'Inter', sans-serif;
         }
+
         header {
             background-color: #4a5568;
             color: white;
@@ -25,6 +26,7 @@
             top: 0;
             z-index: 1000;
         }
+
         .form-container {
             background-color: rgba(255, 255, 255, 0.9);
             max-width: 600px;
@@ -35,6 +37,7 @@
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
             margin-top: 100px;
         }
+
         .btn {
             background-color: #4299e1;
             color: white;
@@ -46,9 +49,11 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s;
         }
+
         .btn:hover {
             background-color: #2b6cb0;
         }
+
         .list-item {
             background-color: #edf2f7;
             border-radius: 15px;
@@ -56,19 +61,23 @@
             margin-bottom: 10px;
             transition: transform 0.3s;
         }
+
         .list-item:hover {
             transform: scale(1.05);
         }
+
         .item-title {
             font-size: 1.5rem;
             margin-bottom: 5px;
             color: #2d3748;
         }
+
         ul {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
+
         .alert {
             position: fixed;
             top: 50%;
@@ -79,10 +88,12 @@
             border-radius: 0.5rem;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
+
         .alert-primary {
             background-color: #4299e1;
             color: white;
         }
+
         .alert-danger {
             background-color: #e53e3e;
             color: white;
@@ -106,9 +117,10 @@
             <button class="btn bg-red-600 hover:bg-red-800">Logout</button>
         </form>
     </div>
+    <div th:if="${success}" class="alert alert-primary" role="alert" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
 </header>
-<div th:if="${success}" class="alert alert-primary" role="alert" th:text="${success}"></div>
-<div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
 <div class="form-container">
     <label class="block text-xl font-semibold mb-2">Search for Books:</label>
     <form th:action="@{/books/search}" method="get" class="mb-4">
@@ -133,5 +145,6 @@
         </li>
     </ul>
 </div>
+
 </body>
 </html>
